@@ -118,9 +118,80 @@
   }
   footer { margin-top: 50px; font-size: .8rem; color: #b6bccb; }
   footer a { color: #b6bccb; text-decoration: none; border-bottom: 1px dashed #d8dce6; }
+
+  /* ---- 右上角的手气按钮 ---- */
+  #dice {
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 11px 18px;
+    font-family: inherit;
+    font-size: .92rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(125deg, #7b5cff, #ff3d71 85%);
+    border: 0;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 10px 24px -8px rgba(123, 92, 255, .65);
+    transition: transform .14s, box-shadow .2s, opacity .2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #dice:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 14px 30px -8px rgba(123, 92, 255, .75); }
+  #dice:active { transform: translateY(0) scale(.97); }
+  #dice:disabled { opacity: .6; cursor: default; transform: none; }
+  #dice .die { font-size: 1.05rem; display: inline-block; }
+  #dice.rolling .die { animation: spin .55s ease; }
+  @keyframes spin {
+    0%   { transform: rotate(0) scale(1); }
+    50%  { transform: rotate(180deg) scale(1.28); }
+    100% { transform: rotate(360deg) scale(1); }
+  }
+
+  /* 手气抽出来的那张卡，单独一点样式 */
+  .card.lucky {
+    border: 1.5px solid #ffe0cc;
+    background: linear-gradient(180deg, #fffdfa, #ffffff 42%);
+    box-shadow: 0 18px 44px -22px rgba(255, 107, 53, .55);
+  }
+  .card.lucky .shop::after {
+    content: "手气";
+    margin-left: 8px;
+    padding: 1px 8px;
+    font-size: .68rem;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(120deg, #7b5cff, #ff3d71);
+    border-radius: 999px;
+    vertical-align: 1px;
+  }
+  .again {
+    margin-top: 14px;
+    padding: 9px 18px;
+    font-family: inherit;
+    font-size: .86rem;
+    font-weight: 600;
+    color: #7b5cff;
+    background: #f4f1ff;
+    border: 0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background .16s, transform .12s;
+  }
+  .again:hover { background: #ebe6ff; transform: translateY(-1px); }
+
+  @media (max-width: 480px) {
+    #dice { top: 12px; right: 12px; padding: 9px 14px; font-size: .84rem; }
+  }
 </style>
 </head>
 <body>
+  <button id="dice" title="不想想，直接随机一个"><span class="die">🎲</span><span>随机</span></button>
+
   <h1>今天吃什么</h1>
   <p class="sub">说一句你想吃的，我告诉你去哪家、点哪道。</p>
 
@@ -227,6 +298,78 @@ $go.onclick = async () => {
 $q.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') $go.click();
 });
+
+/* ============================================================
+   右上角的「随机」按钮
+   ------------------------------------------------------------
+   和「帮我选」完全不同：这里不花 AI 的钱，也不看你想吃什么，
+   直接从整份菜单里闭眼抽一道。
+
+   先把菜单要下来缓存住（几千道也不大），之后每次点就是本地
+   抽一次，所以是「秒出」，连点十次也不心疼。
+   ============================================================ */
+const $dice = document.getElementById('dice');
+let MENU_CACHE = null;
+
+async function getMenu() {
+  if (MENU_CACHE) return MENU_CACHE;
+  const res = await fetch(BACKEND + '/api/menu');
+  const data = await res.json();
+  MENU_CACHE = data.shops || [];
+  return MENU_CACHE;
+}
+
+function luckyPick(shops) {
+  // 先随机挑一家店，再从这家店的菜里随机挑一道。
+  // 这样不会因为某家店菜多就一直抽到它。
+  const shop = shops[Math.floor(Math.random() * shops.length)];
+  const dish = shop.dishes[Math.floor(Math.random() * shop.dishes.length)];
+  const yes = ['就它了', '今天吃这个', '别犹豫了', '天意', '抽到就是缘分'];
+  return {
+    shop: shop.name,
+    dish: dish.name,
+    price: dish.price,
+    spicy: ['不辣', '微辣', '中辣', '特辣'][Math.min(dish.spicy || 0, 3)],
+    why: yes[Math.floor(Math.random() * yes.length)] + '，别再纠结了。'
+  };
+}
+
+function renderLucky(one) {
+  $out.innerHTML = '<div class="card lucky">'
+    + '<div class="shop">' + esc(one.shop) + '</div>'
+    + '<div class="dish">' + esc(one.dish)
+    + '<span class="price"><span>¥</span>' + esc(one.price) + '</span>'
+    + '<span class="meta">' + esc(one.spicy) + '</span>'
+    + '</div>'
+    + '<p class="why">' + esc(one.why) + '</p>'
+    + '<button class="again" id="again">再抽一次</button>'
+    + '</div>';
+  document.getElementById('again').onclick = roll;
+  $out.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+async function roll() {
+  $dice.disabled = true;
+  $dice.classList.remove('rolling');
+  void $dice.offsetWidth;      // 强制重排，让动画能重播
+  $dice.classList.add('rolling');
+
+  $out.innerHTML = '<div class="empty">🎲 摇一摇…</div>';
+  try {
+    const shops = await getMenu();
+    if (!shops.length) throw new Error('菜单是空的');
+    // 停顿一下，让「摇」这个动作有手感
+    await new Promise(r => setTimeout(r, 420));
+    renderLucky(luckyPick(shops));
+  } catch (e) {
+    $out.innerHTML = '<div class="note">连不上后端，抽不了。等会儿再试。</div>';
+  } finally {
+    $dice.disabled = false;
+  }
+}
+
+$dice.onclick = roll;
+
 </script>
 </body>
 </html>
