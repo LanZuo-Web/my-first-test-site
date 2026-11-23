@@ -67,24 +67,64 @@
       color: #4338ca;
       margin-bottom: 18px;
     }
+    #greet {
+      margin: 0 0 16px;
+      line-height: 1.8;
+      color: #374151;
+      font-size: 0.95rem;
+    }
+    button.act {
+      padding: 10px 22px;
+      border: 0;
+      border-radius: 10px;
+      background: #4f46e5;
+      color: #fff;
+      font-size: 0.95rem;
+      font-family: inherit;
+      cursor: pointer;
+    }
+    button.act:active { transform: translateY(1px); }
   </style>
 </head>
 <body>
   <main>
-    <div class="badge">v0.1 · 本地版本</div>
-    <h1>你好👋</h1>
-    <p class="sub">这是我写的第一个网页。<br>它现在只在我的电脑上，很快就要上线了。</p>
+    <div class="badge">v0.2 · 已上线</div>
+    <h1>你好，我是 岚佐 👋</h1>
+    <p class="sub">这是我写的第一个网页。<br>它已经在互联网上了，谁都能打开。</p>
 
     <div class="card">
       <h2>关于我</h2>
       <ul>
         <li>正在学：AI 全栈开发</li>
-        <li>今天完成了：写好第一个网页、把它推进 GitHub</li>
-        <li>下一步：挂到 Render，拿到一个谁都能打开的公网网址</li>
+        <li>今天完成了：写好第一个网页、推进 GitHub、发布上线</li>
+        <li>下一步：让它会说话，然后连上 AI</li>
       </ul>
+    </div>
+
+    <div class="card" style="margin-top: 20px;">
+      <h2>让它动起来</h2>
+      <p id="greet">现在这个网页是死的，点一下按钮试试。</p>
+      <button class="act" onclick="sayHi()">点我</button>
     </div>
 
     <p class="tip">试着把上面的文字改掉、保存、刷新浏览器 —— 你会立刻看到变化。<br>这就是网页开发最原始的快感。</p>
   </main>
+
+  <script>
+    // 数组：一个装了很多句话的盒子
+    const hellos = [
+      "今天也要加油",
+      "你比昨天更会写代码了",
+      "这个页面已经会说话了",
+      "下一步，我们让它连上 AI"
+    ];
+
+    // 函数：点按钮的时候被叫起来执行
+    function sayHi() {
+      const i = Math.floor(Math.random() * hellos.length); // 随机挑一句
+      const time = new Date().toLocaleTimeString();        // 取当前时间
+      document.getElementById("greet").textContent = hellos[i] + " —— " + time;
+    }
+  </script>
 </body>
 </html>
