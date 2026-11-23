@@ -1,130 +1,302 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>我的第一个网页</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(160deg, #eef2ff 0%, #f8fafc 45%, #ecfeff 100%);
-      font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
-      color: #1f2937;
-      padding: 24px;
-    }
-    main {
-      width: 100%;
-      max-width: 620px;
-      text-align: center;
-    }
-    h1 {
-      font-size: 2rem;
-      margin: 0 0 12px;
-      letter-spacing: -0.02em;
-    }
-    .sub {
-      color: #6b7280;
-      margin: 0 0 28px;
-      line-height: 1.7;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid #e5e7eb;
-      border-radius: 14px;
-      padding: 24px 26px;
-      text-align: left;
-      box-shadow: 0 10px 30px -12px rgba(15, 23, 42, 0.18);
-    }
-    .card h2 {
-      font-size: 1rem;
-      margin: 0 0 14px;
-      color: #111827;
-    }
-    .card ul {
-      margin: 0;
-      padding-left: 20px;
-      line-height: 2;
-      color: #374151;
-      font-size: 0.95rem;
-    }
-    .tip {
-      margin-top: 26px;
-      font-size: 0.85rem;
-      color: #9ca3af;
-      line-height: 1.7;
-    }
-    .badge {
-      display: inline-block;
-      font-size: 0.75rem;
-      padding: 3px 10px;
-      border-radius: 999px;
-      background: #e0e7ff;
-      color: #4338ca;
-      margin-bottom: 18px;
-    }
-    #greet {
-      margin: 0 0 16px;
-      line-height: 1.8;
-      color: #374151;
-      font-size: 0.95rem;
-    }
-    button.act {
-      padding: 10px 22px;
-      border: 0;
-      border-radius: 10px;
-      background: #4f46e5;
-      color: #fff;
-      font-size: 0.95rem;
-      font-family: inherit;
-      cursor: pointer;
-    }
-    button.act:active { transform: translateY(1px); }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>今天吃什么</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    min-height: 100vh;
+    background:
+      radial-gradient(900px 500px at 50% -8%, #ffe4cc 0%, transparent 62%),
+      linear-gradient(180deg, #fffaf4 0%, #f7f7fb 100%);
+    font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+    color: #1f2430;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 9vh 20px 70px;
+  }
+  h1 {
+    font-size: clamp(2.4rem, 7vw, 3.8rem);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-align: center;
+    background: linear-gradient(115deg, #ff6b35, #f7931e 52%, #ff3d71);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .sub {
+    margin-top: 16px;
+    color: #8b93a7;
+    font-size: 0.95rem;
+    text-align: center;
+    line-height: 1.75;
+  }
+  .box { width: 100%; max-width: 620px; margin-top: 36px; }
+  textarea {
+    width: 100%;
+    min-height: 96px;
+    padding: 16px 18px;
+    font-size: 1rem;
+    font-family: inherit;
+    line-height: 1.65;
+    color: #1f2430;
+    background: #fff;
+    border: 1.5px solid #ececf2;
+    border-radius: 16px;
+    resize: vertical;
+    outline: none;
+    transition: border-color .18s, box-shadow .18s;
+    box-shadow: 0 2px 12px rgba(31, 36, 48, .045);
+  }
+  textarea:focus {
+    border-color: #ff8a4c;
+    box-shadow: 0 0 0 4px rgba(255, 138, 76, .13);
+  }
+  .row {
+    display: flex; gap: 12px; margin-top: 12px;
+    align-items: center; flex-wrap: wrap;
+  }
+  button {
+    padding: 13px 30px;
+    font-size: 1rem; font-family: inherit; font-weight: 600;
+    color: #fff;
+    background: linear-gradient(120deg, #ff6b35, #ff3d71);
+    border: 0; border-radius: 12px; cursor: pointer;
+    transition: transform .12s, opacity .18s;
+  }
+  button:hover { transform: translateY(-1px); }
+  button:active { transform: translateY(1px); }
+  .tag { font-size: .82rem; color: #9aa1b2; }
+  .tag b { color: #ff6b35; cursor: pointer; font-weight: 600; }
+
+  #out { width: 100%; max-width: 620px; margin-top: 32px; }
+  .card {
+    background: #fff;
+    border: 1px solid #f0f0f5;
+    border-radius: 16px;
+    padding: 20px 22px;
+    margin-bottom: 14px;
+    box-shadow: 0 12px 34px -20px rgba(31, 36, 48, .38);
+    animation: in .3s ease both;
+  }
+  @keyframes in { from { opacity: 0; transform: translateY(10px); } }
+  .card h3 {
+    font-size: 1.12rem; margin-bottom: 10px;
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  }
+  .meta {
+    font-size: .76rem; font-weight: 500; color: #8b93a7;
+    background: #f5f6fa; padding: 3px 9px; border-radius: 999px;
+  }
+  .why {
+    font-size: .9rem; color: #5c6478; line-height: 1.75;
+    margin-bottom: 12px;
+  }
+  .card ol { padding-left: 20px; color: #3a4050; font-size: .92rem; line-height: 1.95; }
+  .missing {
+    margin-top: 12px; font-size: .82rem; color: #b26a00;
+    background: #fff8e6; border-radius: 10px; padding: 8px 12px;
+    display: inline-block;
+  }
+  .empty {
+    text-align: center; color: #8b93a7; font-size: .92rem; padding: 24px;
+  }
+  footer {
+    margin-top: 54px; font-size: .8rem; color: #b6bccb;
+  }
+  footer a { color: #b6bccb; text-decoration: none; border-bottom: 1px dashed #d8dce6; }
+</style>
 </head>
 <body>
-  <main>
-    <div class="badge">v0.2 · 已上线</div>
-    <h1>你好，我是 岚佐 👋</h1>
-    <p class="sub">这是我写的第一个网页。<br>它已经在互联网上了，谁都能打开。</p>
+  <h1>今天吃什么</h1>
+  <p class="sub">告诉我冰箱里有什么，或者你现在想吃什么。<br>我给你三个方案，带做法。</p>
 
-    <div class="card">
-      <h2>关于我</h2>
-      <ul>
-        <li>正在学：AI 全栈开发</li>
-        <li>今天完成了：写好第一个网页、推进 GitHub、发布上线</li>
-        <li>下一步：让它会说话，然后连上 AI</li>
-      </ul>
+  <div class="box">
+    <textarea id="q" placeholder="比如：冰箱里有鸡蛋、土豆、半颗白菜，想吃辣的"></textarea>
+    <div class="row">
+      <button id="go">做点什么</button>
+      <span class="tag">没想法？试试 <b id="rand">随便来一个</b></span>
     </div>
+  </div>
 
-    <div class="card" style="margin-top: 20px;">
-      <h2>让它动起来</h2>
-      <p id="greet">现在这个网页是死的，点一下按钮试试。</p>
-      <button class="act" onclick="sayHi()">点我</button>
-    </div>
+  <div id="out"></div>
 
-    <p class="tip">试着把上面的文字改掉、保存、刷新浏览器 —— 你会立刻看到变化。<br>这就是网页开发最原始的快感。</p>
-  </main>
+  <footer>这是我的第一个网页 · <a href="about.html">旧版本</a></footer>
 
-  <script>
-    // 数组：一个装了很多句话的盒子
-    const hellos = [
-      "今天也要加油",
-      "你比昨天更会写代码了",
-      "这个页面已经会说话了",
-      "下一步，我们让它连上 AI"
-    ];
+<script>
+/* ============================================================
+   这一版用的是「写死的菜谱表 + 关键词匹配」。
+   看着像智能，其实是查表 —— 这叫 mock。
 
-    // 函数：点按钮的时候被叫起来执行
-    function sayHi() {
-      const i = Math.floor(Math.random() * hellos.length); // 随机挑一句
-      const time = new Date().toLocaleTimeString();        // 取当前时间
-      document.getElementById("greet").textContent = hellos[i] + " —— " + time;
-    }
-  </script>
+   以后接上 AI 时，只需要把下面 $go.onclick 里那两行
+   （render(pick(text))）换成一次 fetch 请求，
+   DISHES 这张表就可以退休了。
+   ============================================================ */
+
+const DISHES = [
+  { name: '番茄炒蛋', time: '10 分钟', difficulty: '简单',
+    tags: ['番茄', '西红柿', '鸡蛋', '蛋'],
+    reason: '最快、最不容易翻车的一道，锅热油多就不会难吃。',
+    steps: ['番茄两个切块，鸡蛋三个打散，加一小撮盐。',
+            '热锅多油，倒蛋液，凝固就盛出来，别炒老。',
+            '锅里留底油，下番茄中火炒到出汁，约 3 分钟。',
+            '倒回鸡蛋，加半勺糖、适量盐，翻炒几下出锅。'],
+    missing: [] },
+
+  { name: '醋溜土豆丝', time: '15 分钟', difficulty: '简单',
+    tags: ['土豆', '马铃薯'],
+    reason: '土豆放得久，随时能救场。关键是切完泡水，不然黏成团。',
+    steps: ['土豆切细丝，泡冷水 5 分钟，冲掉表面淀粉。',
+            '热锅冷油，下干辣椒和蒜末爆香。',
+            '大火下土豆丝，快速翻炒 2 分钟。',
+            '沿锅边淋一勺醋，加盐，再翻 30 秒出锅。'],
+    missing: ['干辣椒'] },
+
+  { name: '白菜豆腐汤', time: '20 分钟', difficulty: '简单',
+    tags: ['白菜', '豆腐', '汤'],
+    reason: '清淡暖胃，配任何重口的菜都合适。',
+    steps: ['豆腐切块，白菜切段。',
+            '水烧开，下豆腐煮 5 分钟。',
+            '下白菜，再煮 3 分钟。',
+            '加盐、几滴香油，关火撒葱花。'],
+    missing: [] },
+
+  { name: '青椒炒肉丝', time: '20 分钟', difficulty: '中等',
+    tags: ['青椒', '猪肉', '肉丝', '里脊', '辣'],
+    reason: '下饭利器。肉丝提前抓一下淀粉，口感完全不一样。',
+    steps: ['里脊切丝，加一勺生抽、半勺淀粉、一点水抓匀，腌 10 分钟。',
+            '青椒切丝，蒜切片。',
+            '热锅多油，下肉丝滑散，变色立刻盛出。',
+            '底油下青椒炒 1 分钟，倒回肉丝，加盐翻匀出锅。'],
+    missing: [] },
+
+  { name: '葱油拌面', time: '12 分钟', difficulty: '简单',
+    tags: ['面', '面条', '葱', '饿', '快'],
+    reason: '下班回家最省事的碳水，一口下去人就活了。',
+    steps: ['小葱切段，冷油下锅，小火慢炸到焦黄，约 8 分钟。',
+            '捞出葱段，油里加两勺生抽、半勺老抽、一勺糖，小火搅匀。',
+            '面条煮熟捞出，趁热拌上葱油。'],
+    missing: [] },
+
+  { name: '蒜蓉西兰花', time: '10 分钟', difficulty: '简单',
+    tags: ['西兰花', '花菜', '清淡', '素'],
+    reason: '十分钟能上桌的绿叶菜，焯水时加点盐颜色更绿。',
+    steps: ['西兰花掰小朵，淡盐水泡 5 分钟洗净。',
+            '水开加盐和几滴油，下西兰花焯 1 分钟，捞出过凉水。',
+            '热锅下油爆香蒜末，倒西兰花大火翻炒 1 分钟，加盐出锅。'],
+    missing: [] },
+
+  { name: '西红柿鸡蛋面', time: '15 分钟', difficulty: '简单',
+    tags: ['番茄', '西红柿', '鸡蛋', '面', '面条', '汤'],
+    reason: '一个人的时候最实在的一碗，从头到尾只洗一个锅。',
+    steps: ['番茄切块炒出汁，加两碗水烧开。',
+            '下面条煮到八分熟。',
+            '淋入打散的蛋液，不要搅，等它自己凝成蛋花。',
+            '加盐、白胡椒，撒葱花。'],
+    missing: [] },
+
+  { name: '干煸豆角', time: '25 分钟', difficulty: '中等',
+    tags: ['豆角', '四季豆', '辣', '下饭'],
+    reason: '很下饭，但豆角一定要煸透，生的有毒。',
+    steps: ['豆角掐头去尾，掰成段，洗净沥干水。',
+            '锅里少油，中小火煸豆角到表皮起皱发软，约 8 分钟，盛出。',
+            '底油下肉末、干辣椒、蒜末炒香。',
+            '倒回豆角，加生抽、盐，大火翻炒 2 分钟。'],
+    missing: ['肉末'] },
+
+  { name: '皮蛋豆腐', time: '5 分钟', difficulty: '简单',
+    tags: ['豆腐', '皮蛋', '凉菜', '快', '不用开火'],
+    reason: '完全不用开火，五分钟的事，夏天尤其舒服。',
+    steps: ['内酯豆腐倒扣在盘里，切块。',
+            '皮蛋切小块铺上去。',
+            '淋两勺生抽、一勺香油，撒葱花和一点辣椒油。'],
+    missing: ['皮蛋'] },
+
+  { name: '蛋炒饭', time: '12 分钟', difficulty: '简单',
+    tags: ['米饭', '剩饭', '鸡蛋', '葱', '快'],
+    reason: '剩饭的最好归宿。用隔夜饭，粒粒分明。',
+    steps: ['隔夜饭用手抓散，别结块。',
+            '鸡蛋打散，热锅多油炒成蛋块，盛出。',
+            '底油下米饭，中大火翻炒到粒粒跳动。',
+            '倒回鸡蛋，加盐、葱花，翻匀出锅。'],
+    missing: [] }
+];
+
+const $q = document.getElementById('q');
+const $go = document.getElementById('go');
+const $out = document.getElementById('out');
+const $rand = document.getElementById('rand');
+
+$rand.onclick = () => {
+  const pool = [
+    '冰箱里只有鸡蛋和一点葱',
+    '想吃辣的，但不想出门买菜',
+    '刚下班，只想 15 分钟内吃上饭',
+    '家里有土豆、胡萝卜、半个洋葱',
+    '想吃得清淡点，最好是汤'
+  ];
+  $q.value = pool[Math.floor(Math.random() * pool.length)];
+  $q.focus();
+};
+
+function esc(s) {
+  return String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+}
+
+// 打分：用户说的字里，命中了菜的标签就加分
+function pick(text) {
+  const t = text.toLowerCase();
+  const scored = DISHES.map(d => {
+    let score = 0;
+    d.tags.forEach(tag => { if (t.includes(tag.toLowerCase())) score += 2; });
+    if (t.includes(d.name)) score += 5;
+    return { d, score };
+  });
+
+  let hits = scored.filter(x => x.score > 0).sort((a, b) => b.score - a.score).map(x => x.d);
+  if (hits.length >= 3) return hits.slice(0, 3);
+
+  // 不够三道就随机补齐
+  const rest = DISHES.filter(d => !hits.includes(d));
+  rest.sort(() => Math.random() - 0.5);
+  return hits.concat(rest).slice(0, 3);
+}
+
+function render(dishes) {
+  if (!dishes.length) {
+    $out.innerHTML = '<div class="empty">没想出来，换个说法再试一次？</div>';
+    return;
+  }
+  $out.innerHTML = dishes.map(d => {
+    const steps = d.steps.map(s => '<li>' + esc(s) + '</li>').join('');
+    const missing = d.missing && d.missing.length
+      ? '<div class="missing">还需要买：' + d.missing.map(esc).join('、') + '</div>' : '';
+    return '<div class="card">'
+      + '<h3>' + esc(d.name)
+      + '<span class="meta">⏱ ' + esc(d.time) + '</span>'
+      + '<span class="meta">🔥 ' + esc(d.difficulty) + '</span>'
+      + '</h3>'
+      + '<p class="why">' + esc(d.reason) + '</p>'
+      + '<ol>' + steps + '</ol>'
+      + missing
+      + '</div>';
+  }).join('');
+}
+
+$go.onclick = () => {
+  const text = $q.value.trim();
+  if (!text) { $q.focus(); return; }
+  render(pick(text));
+  $out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+$q.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') $go.click();
+});
+</script>
 </body>
 </html>
