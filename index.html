@@ -296,7 +296,7 @@
 </head>
 <body>
   <div class="topbar">
-    <button id="gear" title="设置 AI 密钥">🔑 密钥</button>
+    <button id="gear" title="填写邀请码">🎫 邀请码</button>
     <button id="dice" title="不想想，直接随机一个"><span class="die">🎲</span><span>随机</span></button>
   </div>
 
@@ -321,14 +321,13 @@
   <!-- 设置密钥 -->
   <div class="mask" id="keyset" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true">
-      <div class="k-title">填一个 DeepSeek 密钥</div>
+      <div class="k-title">填一个邀请码</div>
       <p class="k-tip">
-        「帮我选」要调用大模型，需要你自己的密钥。<br>
-        密钥只存在<b>这台设备的浏览器</b>里，不会传到我这、也不会写进网页。
-        换台设备要再填一次。<br>
-        到 <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noopener">platform.deepseek.com/api_keys</a> 创建一个，复制 <code>sk-</code> 开头那串。
+        这个页面的 AI 是管理员提供的，填了邀请码才能用。<br>
+        邀请码会被记在<b>这台设备的浏览器</b>里，换台设备要再填一次。<br>
+        没有邀请码？找管理员要一个。
       </p>
-      <input id="kinput" type="password" placeholder="sk-..." autocomplete="off" spellcheck="false">
+      <input id="kinput" type="text" placeholder="T-XXXXXX" autocomplete="off" spellcheck="false">
       <div class="k-btns">
         <button class="k-save" id="ksave">保存</button>
         <button class="k-del" id="kdel">清除</button>
@@ -379,8 +378,8 @@
 const MENU = {"shops":[{"name":"学生街 · 沃头蚝干粥","place":"学生街","dishes":[{"name":"红烧牛肉面","price":16.6,"spicy":0,"cat":"面"},{"name":"红烧牛肉粉","price":16.6,"spicy":0,"cat":"面"},{"name":"红烧牛肉泡面","price":16.6,"spicy":0,"cat":"面"},{"name":"红烧牛杂面（微辣）","price":12.6,"spicy":1,"cat":"面"},{"name":"香菇粥","price":8.0,"spicy":0,"cat":"小吃"},{"name":"玉米粥","price":8.0,"spicy":0,"cat":"小吃"},{"name":"皮蛋粥","price":10.0,"spicy":0,"cat":"小吃"},{"name":"瘦肉粥","price":10.0,"spicy":0,"cat":"小吃"}]},{"name":"丽园轩餐厅 · 花样卤自选餐","place":"丽园轩餐厅","dishes":[{"name":"早八救赎·照烧鸡腿排套餐","price":13.0,"spicy":0,"cat":"饭"},{"name":"孜然飘香土豆牛肉套餐","price":15.0,"spicy":0,"cat":"饭"},{"name":"老卤鸡腿套餐","price":12.0,"spicy":0,"cat":"饭"},{"name":"糖醋里脊套餐","price":13.0,"spicy":0,"cat":"饭"},{"name":"酱香酱鸭套餐","price":13.0,"spicy":0,"cat":"饭"},{"name":"酱香鸡翅根套餐（甜口）","price":12.0,"spicy":0,"cat":"饭"},{"name":"菠萝荔枝肉套餐","price":13.0,"spicy":0,"cat":"饭"},{"name":"土豆鸡肉","price":6.0,"spicy":0,"cat":"其他"},{"name":"孜然土豆牛肉","price":8.0,"spicy":0,"cat":"其他"},{"name":"（鸭）老卤香鸭腿","price":6.0,"spicy":0,"cat":"其他"},{"name":"香煎黑椒大鸡扒","price":7.0,"spicy":0,"cat":"其他"},{"name":"腐竹烧肉","price":6.0,"spicy":0,"cat":"其他"},{"name":"老卤香鸡腿","price":5.0,"spicy":0,"cat":"其他"},{"name":"酱香鸡翅根","price":5.0,"spicy":0,"cat":"其他"},{"name":"干香辣子鸡","price":6.0,"spicy":2,"cat":"其他"},{"name":"糖醋里脊","price":6.0,"spicy":0,"cat":"其他"},{"name":"酱香卤酱鸭","price":6.0,"spicy":0,"cat":"其他"},{"name":"菠萝荔枝肉","price":6.0,"spicy":0,"cat":"其他"},{"name":"鱼香肉丝","price":5.0,"spicy":0,"cat":"其他"},{"name":"青椒回锅肉","price":6.0,"spicy":0,"cat":"其他"},{"name":"辣椒炒肉","price":5.0,"spicy":2,"cat":"其他"},{"name":"肉末茄子","price":4.0,"spicy":0,"cat":"其他"},{"name":"香肠炒鸡蛋","price":4.0,"spicy":0,"cat":"其他"},{"name":"青椒炒里脊","price":5.0,"spicy":0,"cat":"其他"},{"name":"（今天加辣加酸版）酸辣包菜","price":2.0,"spicy":1,"cat":"小吃"},{"name":"清炒油菜","price":2.0,"spicy":0,"cat":"其他"},{"name":"嫩滑蒸蛋","price":3.0,"spicy":0,"cat":"其他"},{"name":"包菜粉丝","price":2.5,"spicy":0,"cat":"面"},{"name":"干锅花菜","price":3.0,"spicy":2,"cat":"其他"},{"name":"西红柿鸡蛋","price":3.0,"spicy":0,"cat":"其他"},{"name":"蒜蓉西兰花","price":3.0,"spicy":0,"cat":"其他"},{"name":"蒜蓉菜心","price":3.0,"spicy":0,"cat":"其他"},{"name":"清炒白菜","price":1.0,"spicy":0,"cat":"其他"},{"name":"豆腐","price":1.0,"spicy":0,"cat":"其他"},{"name":"土豆丝","price":2.0,"spicy":0,"cat":"其他"},{"name":"干锅土豆片","price":3.0,"spicy":2,"cat":"其他"},{"name":"豆角肉末","price":3.5,"spicy":0,"cat":"其他"},{"name":"玉米炒香肠","price":3.0,"spicy":0,"cat":"其他"},{"name":"（装一起）超级盲盒","price":8.8,"spicy":0,"cat":"其他"}]},{"name":"丽园轩餐厅 · 港式特色扒饭","place":"丽园轩餐厅","dishes":[{"name":"香煎鸡扒饭（现煎）+脆肠","price":12.0,"spicy":0,"cat":"饭"},{"name":"香煎猪扒饭（现煎）+脆肠","price":12.0,"spicy":0,"cat":"饭"},{"name":"可乐小鸡腿套餐（低卡减脂）","price":9.9,"spicy":0,"cat":"饭"},{"name":"炸鸡腿套餐饭（现炸）","price":11.0,"spicy":0,"cat":"饭"},{"name":"三素套餐","price":8.8,"spicy":0,"cat":"饭"},{"name":"鸳鸯腿套餐+小瓶可乐","price":14.8,"spicy":0,"cat":"饭"},{"name":"超级大卤鸡腿套餐（现卤，减脂可点）","price":9.9,"spicy":0,"cat":"饭"},{"name":"肥牛卷滑蛋饭（低卡减脂）","price":12.5,"spicy":0,"cat":"饭"},{"name":"叉烧滑蛋饭","price":12.5,"spicy":0,"cat":"饭"},{"name":"奥尔良鸡丁滑蛋饭","price":11.0,"spicy":0,"cat":"饭"},{"name":"蚝油肉片滑蛋饭","price":11.5,"spicy":0,"cat":"饭"},{"name":"纯滑蛋饭（减脂可点）","price":8.8,"spicy":0,"cat":"饭"},{"name":"脆肠滑蛋饭","price":9.9,"spicy":0,"cat":"饭"},{"name":"腊肠滑蛋饭","price":11.0,"spicy":0,"cat":"饭"},{"name":"牛肉滑蛋饭","price":15.0,"spicy":0,"cat":"饭"},{"name":"蛋炒饭","price":8.0,"spicy":0,"cat":"饭"},{"name":"脆肠炒饭","price":10.0,"spicy":0,"cat":"饭"},{"name":"腊肠炒饭","price":10.0,"spicy":0,"cat":"饭"},{"name":"肉丝炒饭","price":10.0,"spicy":0,"cat":"饭"},{"name":"炸鸡腿","price":6.0,"spicy":0,"cat":"其他"},{"name":"香煎黑椒大鸡扒","price":6.0,"spicy":0,"cat":"其他"},{"name":"卤鸡蛋","price":2.0,"spicy":0,"cat":"其他"},{"name":"两个荷包蛋","price":3.58,"spicy":0,"cat":"小吃"},{"name":"纸盒饮料","price":0.7,"spicy":0,"cat":"其他"}]},{"name":"丽园轩餐厅 · 赣味小炒","place":"丽园轩餐厅","dishes":[{"name":"红烧肉","price":11.0,"spicy":2,"cat":"饭"},{"name":"可乐鸡","price":11.0,"spicy":0,"cat":"饭"},{"name":"泰式咖喱鸡","price":11.0,"spicy":0,"cat":"饭"},{"name":"川味回锅肉","price":11.0,"spicy":2,"cat":"饭"},{"name":"春笋焖肉","price":11.0,"spicy":0,"cat":"饭"},{"name":"糖醋烧鸡","price":12.0,"spicy":0,"cat":"饭"},{"name":"干萝卜焖肉","price":11.0,"spicy":0,"cat":"饭"},{"name":"东坡肉","price":13.0,"spicy":0,"cat":"饭"},{"name":"干豆角焖肉","price":11.0,"spicy":0,"cat":"饭"},{"name":"超级卤肉","price":11.0,"spicy":0,"cat":"饭"},{"name":"农家一碗香","price":11.0,"spicy":0,"cat":"饭"},{"name":"爆汁牛肉（ ，微辣）","price":13.0,"spicy":1,"cat":"饭"},{"name":"酱香鸭腿","price":10.9,"spicy":0,"cat":"饭"},{"name":"任意双拼，自己备注","price":14.0,"spicy":0,"cat":"饭"},{"name":"大鸡腿双拼","price":9.9,"spicy":0,"cat":"饭"},{"name":"红烧肉拼糖醋鸡","price":13.0,"spicy":0,"cat":"饭"},{"name":"辣椒炒肉拼可乐鸡","price":13.0,"spicy":2,"cat":"饭"},{"name":"鸭腿拼小炒肉","price":14.0,"spicy":0,"cat":"饭"},{"name":"盲盒套餐","price":10.8,"spicy":0,"cat":"饭"},{"name":"鸡腿（单卖）","price":4.0,"spicy":0,"cat":"饭"},{"name":"白米饭换紫米饭","price":0.5,"spicy":0,"cat":"饭"},{"name":"芬达","price":1.5,"spicy":0,"cat":"饭"}]},{"name":"丽园轩餐厅 · 手工米粉","place":"丽园轩餐厅","dishes":[{"name":"大骨肉米粉/面","price":10.9,"spicy":0,"cat":"面"},{"name":"福鼎肉片粉/面","price":9.9,"spicy":0,"cat":"面"},{"name":"鸡肉米粉/面","price":9.9,"spicy":0,"cat":"面"},{"name":"小酥肉米粉/面","price":10.9,"spicy":0,"cat":"面"},{"name":"小肠米粉/面","price":10.9,"spicy":0,"cat":"面"},{"name":"瘦肉米粉/面","price":9.9,"spicy":0,"cat":"面"},{"name":"罗汉肉米粉/面","price":10.9,"spicy":0,"cat":"面"},{"name":"猪心米粉/面","price":12.0,"spicy":0,"cat":"面"},{"name":"猪肚米粉","price":13.0,"spicy":0,"cat":"面"},{"name":"牛肉羹米粉/面","price":13.0,"spicy":0,"cat":"面"},{"name":"牛肉米粉/面","price":14.0,"spicy":0,"cat":"面"},{"name":"火锅料米粉/面","price":10.9,"spicy":0,"cat":"面"},{"name":"金汤酸菜鱼粉/面","price":13.0,"spicy":0,"cat":"面"},{"name":"酸辣粉/面","price":9.0,"spicy":1,"cat":"面"},{"name":"黄金炸蛋米粉","price":9.9,"spicy":0,"cat":"面"},{"name":"贡丸米粉/面","price":10.0,"spicy":0,"cat":"面"},{"name":"鱼丸米粉/面","price":10.0,"spicy":0,"cat":"面"},{"name":"大杂烩米粉","price":16.0,"spicy":0,"cat":"面"},{"name":"海鲜大杂烩米粉","price":16.0,"spicy":0,"cat":"面"},{"name":"罗汉肉+煎蛋","price":12.9,"spicy":0,"cat":"其他"},{"name":"猪肝+煎蛋","price":12.5,"spicy":0,"cat":"其他"},{"name":"大骨肉+煎蛋","price":12.9,"spicy":0,"cat":"其他"},{"name":"沙茶牛肉羹","price":14.0,"spicy":0,"cat":"其他"},{"name":"沙茶牛肉","price":15.0,"spicy":0,"cat":"其他"},{"name":"沙茶大骨肉+蟹肉棒+鱼丸","price":15.0,"spicy":0,"cat":"其他"},{"name":"沙茶海鲜","price":15.0,"spicy":0,"cat":"其他"},{"name":"炸醋肉拼罗汉肉","price":14.0,"spicy":0,"cat":"其他"},{"name":"瘦肉拼罗汉肉","price":14.0,"spicy":0,"cat":"其他"},{"name":"双拼（","price":14.0,"spicy":0,"cat":"其他"},{"name":"香菇+西红柿+蛋+豆泡","price":12.0,"spicy":0,"cat":"其他"},{"name":"香菇+贡丸+蛋+豆泡","price":14.0,"spicy":0,"cat":"其他"},{"name":"香菇+牛肉+蛋+豆泡","price":18.0,"spicy":0,"cat":"其他"},{"name":"西红柿+贡丸+蛋+豆泡","price":14.0,"spicy":0,"cat":"其他"},{"name":"西红柿+鱼丸+蛋+豆泡","price":14.0,"spicy":0,"cat":"其他"},{"name":"西红柿+牛肉丸+蛋+豆泡","price":14.0,"spicy":0,"cat":"其他"},{"name":"番茄鸡蛋盖浇粉/面","price":10.5,"spicy":0,"cat":"面"},{"name":"酸菜肉丝拌粉/面+饮料","price":11.0,"spicy":0,"cat":"面"},{"name":"葱油拌粉/面+煎蛋+饮料","price":8.0,"spicy":0,"cat":"面"},{"name":"番茄肉沫盖浇粉/面","price":11.5,"spicy":0,"cat":"面"},{"name":"绿豆芽","price":1.0,"spicy":0,"cat":"其他"},{"name":"大胃王加粉/加面","price":2.0,"spicy":0,"cat":"面"}]},{"name":"丽园轩餐厅 · 第5季烧腊","place":"丽园轩餐厅","dishes":[{"name":"糖醋肉","price":10.5,"spicy":2,"cat":"其他"}]},{"name":"丽园轩餐厅 · 馒头包子","place":"丽园轩餐厅","dishes":[{"name":"稀饭","price":2.0,"spicy":0,"cat":"饭"}]},{"name":"丽园轩餐厅 · 吉米健身餐","place":"丽园轩餐厅","dishes":[{"name":"白水鸡胸肉+蔬菜+米饭","price":5.7,"spicy":0,"cat":"饭"},{"name":"白水去骨鸡腿肉+蔬菜+米饭","price":6.2,"spicy":0,"cat":"饭"},{"name":"鸡腿+鸡胸肉双排","price":6.2,"spicy":0,"cat":"其他"},{"name":"鸡丝+蔬菜+米饭","price":5.7,"spicy":0,"cat":"饭"},{"name":"王正浩刀款+蔬菜+米饭","price":5.7,"spicy":0,"cat":"饭"},{"name":"去皮卤大鸡腿饭（配菜2个）","price":10.0,"spicy":0,"cat":"饭"},{"name":"去皮黄焖鸭腿饭（配菜2个）","price":10.0,"spicy":0,"cat":"饭"},{"name":"卤大鸡腿饭（配菜2个）","price":10.0,"spicy":0,"cat":"饭"},{"name":"黄焖鸭腿饭（配菜2个）","price":10.0,"spicy":0,"cat":"饭"},{"name":"去皮双鸡腿套餐","price":14.0,"spicy":0,"cat":"饭"},{"name":"去皮双鸭腿+蔬菜+米饭","price":15.0,"spicy":0,"cat":"饭"},{"name":"卤蛋","price":1.5,"spicy":0,"cat":"其他"},{"name":"去皮卤大鸡腿","price":5.0,"spicy":0,"cat":"其他"},{"name":"黄焖鸭腿","price":7.0,"spicy":0,"cat":"其他"},{"name":"卤大鸡腿","price":5.0,"spicy":0,"cat":"其他"},{"name":"茶叶蛋","price":1.5,"spicy":0,"cat":"其他"}]},{"name":"丽园轩餐厅 · 37℃粥","place":"丽园轩餐厅","dishes":[{"name":"养胃小米粥","price":4.99,"spicy":0,"cat":"小吃"},{"name":"生滚皮蛋瘦肉粥","price":8.2,"spicy":0,"cat":"小吃"},{"name":"红枣牛奶燕麦粥","price":0.01,"spicy":0,"cat":"小吃"},{"name":"玉米碴子芸豆粥","price":6.11,"spicy":0,"cat":"小吃"},{"name":"生滚排骨粥","price":9.13,"spicy":0,"cat":"小吃"},{"name":"生滚番茄鸡蛋粥","price":7.99,"spicy":0,"cat":"小吃"},{"name":"鸿运满满腊八粥","price":0.01,"spicy":0,"cat":"小吃"},{"name":"闽南地瓜粥","price":5.0,"spicy":0,"cat":"小吃"},{"name":"（冰）香甜黑米粥","price":6.0,"spicy":0,"cat":"小吃"},{"name":"（冰）鸿运满满腊八粥","price":7.0,"spicy":0,"cat":"小吃"},{"name":"石磨肠粉+红枣牛奶燕麦","price":14.0,"spicy":0,"cat":"面"},{"name":"石磨肠粉","price":7.0,"spicy":0,"cat":"面"},{"name":"石磨肠粉自由搭","price":6.5,"spicy":0,"cat":"面"},{"name":"石磨肠粉（鸡蛋、玉米）","price":7.5,"spicy":0,"cat":"面"},{"name":"石磨肠粉（瘦肉、火腿）","price":7.0,"spicy":0,"cat":"面"},{"name":"东莞蒸米粉（蛋、肉）","price":9.9,"spicy":0,"cat":"面"},{"name":"石磨黑椒猪排肠粉","price":9.19,"spicy":0,"cat":"面"},{"name":"广东肠粉+玉米碴子芸豆粥","price":13.5,"spicy":0,"cat":"面"},{"name":"正宗闽南肉粽","price":5.36,"spicy":0,"cat":"其他"},{"name":"手工老面小笼包","price":3.66,"spicy":0,"cat":"面"},{"name":"蛋奶开花包","price":2.59,"spicy":0,"cat":"小吃"},{"name":"爆汁流沙包","price":2.5,"spicy":0,"cat":"小吃"},{"name":"鲜肉包","price":2.5,"spicy":0,"cat":"小吃"},{"name":"咸蛋黄烧麦","price":2.5,"spicy":0,"cat":"小吃"},{"name":"糯米鸡","price":4.0,"spicy":0,"cat":"其他"},{"name":"红糖糕","price":2.0,"spicy":0,"cat":"小吃"},{"name":"酒酿米糕","price":2.5,"spicy":0,"cat":"小吃"},{"name":"黑椒猪排","price":5.85,"spicy":0,"cat":"其他"},{"name":"五香萝卜丁","price":1.99,"spicy":0,"cat":"其他"},{"name":"煎蛋","price":2.5,"spicy":0,"cat":"其他"},{"name":"蜂蜜四果汤","price":5.88,"spicy":0,"cat":"小吃"},{"name":"椰奶四果汤","price":6.88,"spicy":0,"cat":"小吃"},{"name":"椰果喜多多","price":5.0,"spicy":0,"cat":"其他"},{"name":"姜糖汤圆（姨妈首选）","price":5.0,"spicy":0,"cat":"小吃"},{"name":"仙草蜜","price":6.0,"spicy":0,"cat":"小吃"},{"name":"生滚香菇鸡肉粥","price":8.0,"spicy":0,"cat":"小吃"},{"name":"生滚青菜瘦肉粥","price":8.0,"spicy":0,"cat":"小吃"},{"name":"生滚香菇瘦肉粥","price":7.0,"spicy":0,"cat":"小吃"},{"name":"生滚腊肠粥","price":8.0,"spicy":0,"cat":"小吃"},{"name":"生滚鸡蛋粥","price":7.0,"spicy":0,"cat":"小吃"},{"name":"生滚玉米皮蛋粥","price":8.0,"spicy":0,"cat":"小吃"},{"name":"生滚紫菜瘦肉粥","price":8.0,"spicy":0,"cat":"小吃"},{"name":"广式蒸面（蛋、肉）","price":9.49,"spicy":0,"cat":"面"},{"name":"生滚粥额外加料区","price":2.2,"spicy":0,"cat":"小吃"}]},{"name":"丽园轩餐厅 · 品优自选餐","place":"丽园轩餐厅","dishes":[{"name":"卤鸡腿+两素+米饭","price":8.9,"spicy":0,"cat":"饭"},{"name":"可乐鸡+两素+饭10.9","price":10.9,"spicy":0,"cat":"饭"},{"name":"黑椒鸡排+两素+米饭","price":10.5,"spicy":0,"cat":"饭"},{"name":"金汤肥牛+两素+米饭","price":10.5,"spicy":0,"cat":"饭"},{"name":"红烧猪脚+青菜+米饭","price":9.9,"spicy":0,"cat":"饭"},{"name":"红烧肉烧鹌鹑蛋+两素+饭","price":10.5,"spicy":0,"cat":"饭"},{"name":"霸王烤腿+素菜+米饭","price":9.9,"spicy":0,"cat":"饭"},{"name":"香酥鸡腿+两素+米饭","price":10.5,"spicy":0,"cat":"饭"},{"name":"烤鸭+半荤+一素+饭（1人份）","price":10.9,"spicy":0,"cat":"饭"},{"name":"红烧猪蹄+两素+米饭","price":9.9,"spicy":0,"cat":"饭"},{"name":"红烧猪舌+两素+米饭","price":10.9,"spicy":0,"cat":"饭"},{"name":"土豆牛腩+两素+饭","price":11.8,"spicy":0,"cat":"饭"},{"name":"香酥烤鸭+肉沫茄子+米饭（1人份）","price":10.9,"spicy":0,"cat":"饭"},{"name":"肉沫茄子+超级大卤鸡腿+米饭（1人份）","price":9.9,"spicy":0,"cat":"饭"},{"name":"豆腐烧肉+超级大卤鸡腿+米饭（1人份）","price":9.9,"spicy":0,"cat":"饭"},{"name":"香酥炸大鸡腿","price":6.0,"spicy":0,"cat":"其他"},{"name":"茭白炒肉","price":6.0,"spicy":0,"cat":"其他"},{"name":"番茄滑肉","price":6.0,"spicy":0,"cat":"其他"},{"name":"肉沫蒸蛋","price":6.0,"spicy":0,"cat":"其他"},{"name":"辣子鸡","price":6.0,"spicy":2,"cat":"其他"},{"name":"超级大卤鸡腿","price":5.0,"spicy":0,"cat":"其他"},{"name":"肉沫茄子","price":4.0,"spicy":0,"cat":"其他"},{"name":"黄焖鸡","price":6.0,"spicy":0,"cat":"其他"},{"name":"青椒炒腊肠","price":7.0,"spicy":0,"cat":"其他"},{"name":"青椒炒牛柳","price":6.0,"spicy":0,"cat":"其他"},{"name":"鸭肉","price":7.0,"spicy":0,"cat":"其他"},{"name":"家常豆泡","price":3.0,"spicy":0,"cat":"其他"},{"name":"素炒山药","price":4.0,"spicy":0,"cat":"其他"},{"name":"清炒莴笋","price":3.0,"spicy":0,"cat":"其他"},{"name":"干锅花菜","price":3.0,"spicy":2,"cat":"其他"},{"name":"清炒西兰花","price":3.0,"spicy":0,"cat":"其他"},{"name":"韭菜炒鸡蛋","price":3.0,"spicy":0,"cat":"其他"},{"name":"清炒土豆丝","price":2.0,"spicy":0,"cat":"其他"},{"name":"秘制翅根套餐","price":12.9,"spicy":0,"cat":"饭"},{"name":"荔枝肉套餐饭","price":11.9,"spicy":0,"cat":"饭"},{"name":"红烧肉加鹌鹑蛋套餐","price":12.9,"spicy":0,"cat":"饭"},{"name":"超级大卤鸡腿套餐","price":10.9,"spicy":0,"cat":"饭"}]},{"name":"丽园轩餐厅 · 麻辣香锅","place":"丽园轩餐厅","dishes":[{"name":"三荤五素+主食（新升级）","price":10.9,"spicy":0,"cat":"其他"},{"name":"滑肉盖浇饭","price":10.0,"spicy":0,"cat":"饭"},{"name":"健身餐 240g","price":9.0,"spicy":0,"cat":"其他"},{"name":"两荤一素盖浇饭","price":9.9,"spicy":0,"cat":"饭"},{"name":"青椒炒肉盖浇饭","price":9.0,"spicy":0,"cat":"饭"},{"name":"滑肉面套餐","price":10.0,"spicy":0,"cat":"面"},{"name":"娃娃菜","price":2.0,"spicy":0,"cat":"其他"},{"name":"油条","price":2.0,"spicy":0,"cat":"小吃"},{"name":"牛筋丸（2个）","price":3.0,"spicy":0,"cat":"其他"},{"name":"土豆片","price":2.0,"spicy":0,"cat":"其他"},{"name":"时令蔬菜","price":2.0,"spicy":0,"cat":"其他"},{"name":"皮蛋卷","price":3.0,"spicy":0,"cat":"其他"},{"name":"黑椒牛柳","price":3.0,"spicy":0,"cat":"其他"},{"name":"牛扒（2片）","price":3.0,"spicy":0,"cat":"其他"},{"name":"兰花串","price":2.0,"spicy":0,"cat":"其他"},{"name":"麻辣肉片","price":3.0,"spicy":2,"cat":"其他"},{"name":"醋肉（猪瘦肉）","price":3.0,"spicy":0,"cat":"其他"},{"name":"瘦肉","price":3.0,"spicy":0,"cat":"其他"},{"name":"热狗肠","price":1.5,"spicy":0,"cat":"其他"}]}]};
 
 const SPICY = ['不辣', '微辣', '中辣', '特辣'];
-const API = 'https://api.deepseek.com/chat/completions';
-const KEY_LS = 'ds_key';
+const API = 'https://lanzuo-first-test-d4daz31dd05d16-1539629505.ap-shanghai.app.tcloudbase.com/meal';
+const KEY_LS = 'ds_token';
 const CN_NUM = { '零':0,'一':1,'两':2,'二':2,'三':3,'四':4,'五':5,'六':6,'七':7,'八':8,'九':9,'十':10 };
 
 const $ = id => document.getElementById(id);
@@ -411,13 +410,13 @@ $('kclose').onclick = closeKey;
 $keyset.onclick = e => { if (e.target === $keyset) closeKey(); };
 $('ksave').onclick = () => {
   const v = $('kinput').value.trim();
-  if (!v.startsWith('sk-')) { alert('密钥一般以 sk- 开头，检查一下'); return; }
+  if (v.length < 4) { alert('邀请码看起来不对，检查一下'); return; }
   KEY = v; localStorage.setItem(KEY_LS, v); paintGear(); closeKey();
-  $out.innerHTML = '<div class="note">密钥已保存在这台设备上，现在可以点「帮我选」了。</div>';
+  $out.innerHTML = '<div class="note">邀请码已验证格式并保存，现在可以点「帮我选」了。</div>';
 };
 $('kdel').onclick = () => {
   KEY = ''; localStorage.removeItem(KEY_LS); paintGear(); $('kinput').value = '';
-  $out.innerHTML = '<div class="note">密钥已从这台设备清除。</div>';
+  $out.innerHTML = '<div class="note">邀请码已从这台设备清除。</div>';
 };
 
 /* ---------- 渲染推荐卡片 ---------- */
@@ -497,43 +496,33 @@ const SYS = [
 $go.onclick = async () => {
   const text = $q.value.trim();
   if (!text) { $q.focus(); return; }
-  if (!KEY) { openKey(); $out.innerHTML = '<div class="note">先填一个密钥（右上角 🔑），只用填一次。</div>'; return; }
+  if (!KEY) { openKey(); $out.innerHTML = '<div class="note">先填一个邀请码（右上角 🎫），只用填一次。</div>'; return; }
 
   $go.disabled = true;
   $out.innerHTML = '<div class="empty">正在挑…</div>';
 
   const budget = parseBudget(text);
-  const userMsg = '我的需求：' + text
-    + (budget != null ? '\n\n硬性约束：预算上限 ' + budget + ' 元，超过的不要推。' : '')
-    + '\n\n菜单：\n' + JSON.stringify(MENU.shops);
 
   try {
     const res = await fetch(API, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + KEY },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: [{ role: 'system', content: SYS }, { role: 'user', content: userMsg }],
-        response_format: { type: 'json_object' },
-        temperature: 1.0
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: KEY, text, budget, menu: MENU.shops })
     });
 
-    if (res.status === 401) throw new Error('KEY_BAD');
-    if (res.status === 402) throw new Error('NO_MONEY');
+    if (res.status === 403) throw new Error('BAD_TOKEN');
     if (!res.ok) throw new Error('HTTP ' + res.status);
 
     const data = await res.json();
-    const txt = data.choices?.[0]?.message?.content || '{}';
+    const txt = data.content || '{}';
     let parsed;
     try { parsed = JSON.parse(txt); } catch { parsed = JSON.parse(txt.slice(txt.indexOf('{'), txt.lastIndexOf('}') + 1)); }
 
     render(normalize(parsed.picks, budget), parsed.note);
   } catch (e) {
     const m = e.message;
-    if (m === 'KEY_BAD') { $out.innerHTML = '<div class="note">密钥不对（401）。点右上角 🔑 重新填一个。</div>'; openKey(); }
-    else if (m === 'NO_MONEY') { $out.innerHTML = '<div class="note">这个密钥的余额不足（402），去 platform.deepseek.com 充一点。</div>'; }
-    else { $out.innerHTML = '<div class="note">没连上 DeepSeek：' + esc(m) + '。检查一下网络，再点一次。</div>'; }
+    if (m === 'BAD_TOKEN') { $out.innerHTML = '<div class="note">邀请码无效，或者已经被停用了。点右上角 🎫 换一个。</div>'; openKey(); }
+    else { $out.innerHTML = '<div class="note">没连上服务器：' + esc(m) + '。检查一下网络，再点一次。</div>'; }
   } finally {
     $go.disabled = false;
   }
