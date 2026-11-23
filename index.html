@@ -129,13 +129,16 @@
 
 <script>
 /* ============================================================
-   这一版用的是「写死的菜谱表 + 关键词匹配」。
-   看着像智能，其实是查表 —— 这叫 mock。
+   页面怎么工作的：
+   1. 先问后端（BACKEND 那个地址），后端再拿着 Key 去问大模型
+   2. 后端连不上，就退回下面 DISHES 这张本地菜谱表，页面不至于白屏
 
-   以后接上 AI 时，只需要把下面 $go.onclick 里那两行
-   （render(pick(text))）换成一次 fetch 请求，
-   DISHES 这张表就可以退休了。
+   为什么 Key 不在这个文件里？
+   因为这个文件的每一行，任何人按 F12 都能看到。
+   Key 只能放在后端，那是别人看不见的地方。
    ============================================================ */
+
+const BACKEND = 'https://parts-wyoming-satisfactory-tile.trycloudflare.com';
 
 const DISHES = [
   { name: '番茄炒蛋', time: '10 分钟', difficulty: '简单',
@@ -287,11 +290,31 @@ function render(dishes) {
   }).join('');
 }
 
-$go.onclick = () => {
+$go.onclick = async () => {
   const text = $q.value.trim();
   if (!text) { $q.focus(); return; }
-  render(pick(text));
+
+  $go.disabled = true;
+  $out.innerHTML = '<div class="empty">正在想…</div>';
   $out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  try {
+    const res = await fetch(BACKEND + '/api/recommend', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text })
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    render(data.dishes || []);
+  } catch (e) {
+    // 后端挂了 / 隧道断了 / 电脑关机了 —— 退回本地表，至少还能用
+    render(pick(text));
+    $out.insertAdjacentHTML('beforeend',
+      '<div class="empty">（AI 这会儿连不上，先用本地菜谱表顶着）</div>');
+  } finally {
+    $go.disabled = false;
+  }
 };
 
 $q.addEventListener('keydown', e => {
