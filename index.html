@@ -187,10 +187,145 @@
   @media (max-width: 480px) {
     #dice { top: 12px; right: 12px; padding: 9px 14px; font-size: .84rem; }
   }
+
+  /* ---- 随机结果的弹窗 ---- */
+  .mask {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    background: rgba(26, 22, 36, .42);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s ease;
+  }
+  .mask.show { opacity: 1; pointer-events: auto; }
+
+  .modal {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    padding: 30px 26px 24px;
+    text-align: center;
+    background: #fff;
+    border-radius: 22px;
+    box-shadow: 0 34px 90px -26px rgba(26, 22, 36, .6);
+    transform: translateY(16px) scale(.95);
+    transition: transform .3s cubic-bezier(.18, .9, .3, 1.25);
+    overflow: hidden;
+  }
+  .mask.show .modal { transform: none; }
+  .modal::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 6px;
+    background: linear-gradient(90deg, #7b5cff, #ff3d71, #ff9330);
+  }
+  .modal .big {
+    font-size: 2.4rem;
+    line-height: 1;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .modal .m-shop {
+    font-size: .8rem;
+    font-weight: 600;
+    color: #ff8a4c;
+    letter-spacing: .02em;
+  }
+  .modal .m-dish {
+    margin-top: 10px;
+    font-size: 1.62rem;
+    font-weight: 800;
+    line-height: 1.35;
+    color: #1f2430;
+    word-break: break-word;
+  }
+  .modal .m-row {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .modal .m-price {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #ff3d71;
+  }
+  .modal .m-price span { font-size: .9rem; font-weight: 600; }
+  .modal .m-spicy {
+    font-size: .78rem;
+    font-weight: 600;
+    color: #7b5cff;
+    background: #f2efff;
+    padding: 4px 12px;
+    border-radius: 999px;
+  }
+  .modal .m-why {
+    margin-top: 16px;
+    font-size: .92rem;
+    line-height: 1.8;
+    color: #5c6478;
+  }
+  .modal .m-btns {
+    margin-top: 24px;
+    display: flex;
+    gap: 10px;
+  }
+  .modal button {
+    flex: 1;
+    padding: 13px 0;
+    font-family: inherit;
+    font-size: .95rem;
+    font-weight: 700;
+    border: 0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform .12s, opacity .18s, background .18s;
+  }
+  .m-again {
+    color: #fff;
+    background: linear-gradient(120deg, #7b5cff, #ff3d71);
+    box-shadow: 0 10px 22px -12px rgba(123, 92, 255, .9);
+  }
+  .m-again:hover { transform: translateY(-1px); }
+  .m-close { color: #6b7280; background: #f3f4f8; }
+  .m-close:hover { background: #e9ebf2; }
+  .modal button:active { transform: scale(.98); }
+
+  @media (max-width: 480px) {
+    .modal { padding: 26px 20px 20px; }
+    .modal .m-dish { font-size: 1.4rem; }
+  }
 </style>
 </head>
 <body>
   <button id="dice" title="不想想，直接随机一个"><span class="die">🎲</span><span>随机</span></button>
+
+  <div class="mask" id="mask" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="m-dish">
+      <span class="big">🎲</span>
+      <div class="m-shop" id="m-shop"></div>
+      <div class="m-dish" id="m-dish"></div>
+      <div class="m-row">
+        <div class="m-price" id="m-price"></div>
+        <div class="m-spicy" id="m-spicy"></div>
+      </div>
+      <p class="m-why" id="m-why"></p>
+      <div class="m-btns">
+        <button class="m-again" id="m-again">再抽一次</button>
+        <button class="m-close" id="m-close">就吃这个</button>
+      </div>
+    </div>
+  </div>
 
   <h1>今天吃什么</h1>
   <p class="sub">说一句你想吃的，我告诉你去哪家、点哪道。</p>
@@ -335,18 +470,34 @@ function luckyPick(shops) {
 }
 
 function renderLucky(one) {
-  $out.innerHTML = '<div class="card lucky">'
-    + '<div class="shop">' + esc(one.shop) + '</div>'
-    + '<div class="dish">' + esc(one.dish)
-    + '<span class="price"><span>¥</span>' + esc(one.price) + '</span>'
-    + '<span class="meta">' + esc(one.spicy) + '</span>'
-    + '</div>'
-    + '<p class="why">' + esc(one.why) + '</p>'
-    + '<button class="again" id="again">再抽一次</button>'
-    + '</div>';
-  document.getElementById('again').onclick = roll;
-  $out.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  document.getElementById('m-shop').textContent = one.shop;
+  document.getElementById('m-dish').textContent = one.dish;
+  document.getElementById('m-price').innerHTML = '<span>¥</span>' + esc(one.price);
+  document.getElementById('m-spicy').textContent = one.spicy;
+  document.getElementById('m-why').textContent = one.why;
 }
+
+const $mask = document.getElementById('mask');
+
+function openModal(one) {
+  renderLucky(one);
+  $mask.classList.add('show');
+  $mask.setAttribute('aria-hidden', 'false');
+}
+
+function closeModal() {
+  $mask.classList.remove('show');
+  $mask.setAttribute('aria-hidden', 'true');
+}
+
+// 点遮罩空白处 = 关掉（但点到卡片里面不关）
+$mask.onclick = e => { if (e.target === $mask) closeModal(); };
+// Esc 也能关
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && $mask.classList.contains('show')) closeModal();
+});
+document.getElementById('m-close').onclick = closeModal;
+document.getElementById('m-again').onclick = () => roll();
 
 async function roll() {
   $dice.disabled = true;
@@ -354,14 +505,14 @@ async function roll() {
   void $dice.offsetWidth;      // 强制重排，让动画能重播
   $dice.classList.add('rolling');
 
-  $out.innerHTML = '<div class="empty">🎲 摇一摇…</div>';
   try {
     const shops = await getMenu();
     if (!shops.length) throw new Error('菜单是空的');
     // 停顿一下，让「摇」这个动作有手感
     await new Promise(r => setTimeout(r, 420));
-    renderLucky(luckyPick(shops));
+    openModal(luckyPick(shops));
   } catch (e) {
+    closeModal();
     $out.innerHTML = '<div class="note">连不上后端，抽不了。等会儿再试。</div>';
   } finally {
     $dice.disabled = false;
