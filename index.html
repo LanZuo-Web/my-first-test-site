@@ -16,10 +16,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 9vh 20px 70px;
+    padding: 8vh 20px 70px;
   }
   h1 {
-    font-size: clamp(2.4rem, 7vw, 3.8rem);
+    font-size: clamp(2.3rem, 6.6vw, 3.6rem);
     font-weight: 800;
     letter-spacing: 0.06em;
     text-align: center;
@@ -29,16 +29,16 @@
     color: transparent;
   }
   .sub {
-    margin-top: 16px;
+    margin-top: 14px;
     color: #8b93a7;
-    font-size: 0.95rem;
+    font-size: .95rem;
     text-align: center;
     line-height: 1.75;
   }
-  .box { width: 100%; max-width: 620px; margin-top: 36px; }
+  .box { width: 100%; max-width: 620px; margin-top: 30px; }
   textarea {
     width: 100%;
-    min-height: 96px;
+    min-height: 88px;
     padding: 16px 18px;
     font-size: 1rem;
     font-family: inherit;
@@ -56,11 +56,16 @@
     border-color: #ff8a4c;
     box-shadow: 0 0 0 4px rgba(255, 138, 76, .13);
   }
-  .row {
-    display: flex; gap: 12px; margin-top: 12px;
-    align-items: center; flex-wrap: wrap;
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .chip {
+    font-size: .85rem; font-family: inherit; color: #5c6478;
+    background: #fff; border: 1px solid #ececf2; border-radius: 999px;
+    padding: 7px 14px; cursor: pointer;
+    transition: all .15s;
   }
-  button {
+  .chip:hover { border-color: #ffb98f; color: #ff6b35; transform: translateY(-1px); }
+  .row { display: flex; gap: 12px; margin-top: 14px; align-items: center; flex-wrap: wrap; }
+  button.go {
     padding: 13px 30px;
     font-size: 1rem; font-family: inherit; font-weight: 600;
     color: #fff;
@@ -68,58 +73,74 @@
     border: 0; border-radius: 12px; cursor: pointer;
     transition: transform .12s, opacity .18s;
   }
-  button:hover { transform: translateY(-1px); }
-  button:active { transform: translateY(1px); }
+  button.go:hover { transform: translateY(-1px); }
+  button.go:active { transform: translateY(1px); }
+  button.go:disabled { opacity: .55; cursor: default; transform: none; }
   .tag { font-size: .82rem; color: #9aa1b2; }
-  .tag b { color: #ff6b35; cursor: pointer; font-weight: 600; }
 
-  #out { width: 100%; max-width: 620px; margin-top: 32px; }
+  #out { width: 100%; max-width: 620px; margin-top: 30px; }
   .card {
     background: #fff;
     border: 1px solid #f0f0f5;
     border-radius: 16px;
-    padding: 20px 22px;
+    padding: 18px 22px 20px;
     margin-bottom: 14px;
     box-shadow: 0 12px 34px -20px rgba(31, 36, 48, .38);
     animation: in .3s ease both;
   }
   @keyframes in { from { opacity: 0; transform: translateY(10px); } }
-  .card h3 {
-    font-size: 1.12rem; margin-bottom: 10px;
-    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  .shop {
+    font-size: .78rem; color: #ff8a4c; font-weight: 600;
+    letter-spacing: .02em; margin-bottom: 6px;
   }
+  .dish {
+    font-size: 1.24rem; font-weight: 700;
+    display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+  }
+  .price { font-size: 1rem; color: #ff3d71; font-weight: 700; }
+  .price span { font-size: .78rem; font-weight: 500; }
   .meta {
-    font-size: .76rem; font-weight: 500; color: #8b93a7;
-    background: #f5f6fa; padding: 3px 9px; border-radius: 999px;
+    font-size: .74rem; font-weight: 500; color: #8b93a7;
+    background: #f5f6fa; padding: 2px 9px; border-radius: 999px;
+    vertical-align: middle;
   }
   .why {
+    margin-top: 10px;
     font-size: .9rem; color: #5c6478; line-height: 1.75;
-    margin-bottom: 12px;
   }
-  .card ol { padding-left: 20px; color: #3a4050; font-size: .92rem; line-height: 1.95; }
-  .missing {
-    margin-top: 12px; font-size: .82rem; color: #b26a00;
-    background: #fff8e6; border-radius: 10px; padding: 8px 12px;
-    display: inline-block;
+  .note {
+    text-align: center; color: #b26a00; font-size: .86rem;
+    background: #fff8e6; border-radius: 10px; padding: 10px 14px;
+    margin-bottom: 14px;
   }
   .empty {
     text-align: center; color: #8b93a7; font-size: .92rem; padding: 24px;
   }
-  footer {
-    margin-top: 54px; font-size: .8rem; color: #b6bccb;
-  }
+  footer { margin-top: 50px; font-size: .8rem; color: #b6bccb; }
   footer a { color: #b6bccb; text-decoration: none; border-bottom: 1px dashed #d8dce6; }
 </style>
 </head>
 <body>
   <h1>今天吃什么</h1>
-  <p class="sub">告诉我冰箱里有什么，或者你现在想吃什么。<br>我给你三个方案，带做法。</p>
+  <p class="sub">说一句你想吃的，我告诉你去哪家、点哪道。</p>
 
   <div class="box">
-    <textarea id="q" placeholder="比如：冰箱里有鸡蛋、土豆、半颗白菜，想吃辣的"></textarea>
+    <textarea id="q" placeholder="比如：想吃面，不要辣，十块左右"></textarea>
+
+    <div class="chips">
+      <button class="chip" data-t="想吃面">想吃面</button>
+      <button class="chip" data-t="想吃米饭">想吃米饭</button>
+      <button class="chip" data-t="想吃粉">想吃粉</button>
+      <button class="chip" data-t="不辣">不辣</button>
+      <button class="chip" data-t="微辣">微辣</button>
+      <button class="chip" data-t="想吃辣的">想吃辣的</button>
+      <button class="chip" data-t="十块以内">十块以内</button>
+      <button class="chip" data-t="随便">随便</button>
+    </div>
+
     <div class="row">
-      <button id="go">做点什么</button>
-      <span class="tag">没想法？试试 <b id="rand">随便来一个</b></span>
+      <button class="go" id="go">帮我选</button>
+      <span class="tag">不满意就再点一次，每次都不一样</span>
     </div>
   </div>
 
@@ -129,9 +150,10 @@
 
 <script>
 /* ============================================================
-   页面怎么工作的：
-   1. 先问后端（BACKEND 那个地址），后端再拿着 Key 去问大模型
-   2. 后端连不上，就退回下面 DISHES 这张本地菜谱表，页面不至于白屏
+   这个页面怎么工作的：
+   1. 你输入一句话，页面把它发给后端
+   2. 后端拿着「学校菜单 + 你的话」去问大模型
+   3. 大模型从菜单里挑 3 个，页面画出来
 
    为什么 Key 不在这个文件里？
    因为这个文件的每一行，任何人按 F12 都能看到。
@@ -140,152 +162,37 @@
 
 const BACKEND = 'https://parts-wyoming-satisfactory-tile.trycloudflare.com';
 
-const DISHES = [
-  { name: '番茄炒蛋', time: '10 分钟', difficulty: '简单',
-    tags: ['番茄', '西红柿', '鸡蛋', '蛋'],
-    reason: '最快、最不容易翻车的一道，锅热油多就不会难吃。',
-    steps: ['番茄两个切块，鸡蛋三个打散，加一小撮盐。',
-            '热锅多油，倒蛋液，凝固就盛出来，别炒老。',
-            '锅里留底油，下番茄中火炒到出汁，约 3 分钟。',
-            '倒回鸡蛋，加半勺糖、适量盐，翻炒几下出锅。'],
-    missing: [] },
-
-  { name: '醋溜土豆丝', time: '15 分钟', difficulty: '简单',
-    tags: ['土豆', '马铃薯'],
-    reason: '土豆放得久，随时能救场。关键是切完泡水，不然黏成团。',
-    steps: ['土豆切细丝，泡冷水 5 分钟，冲掉表面淀粉。',
-            '热锅冷油，下干辣椒和蒜末爆香。',
-            '大火下土豆丝，快速翻炒 2 分钟。',
-            '沿锅边淋一勺醋，加盐，再翻 30 秒出锅。'],
-    missing: ['干辣椒'] },
-
-  { name: '白菜豆腐汤', time: '20 分钟', difficulty: '简单',
-    tags: ['白菜', '豆腐', '汤'],
-    reason: '清淡暖胃，配任何重口的菜都合适。',
-    steps: ['豆腐切块，白菜切段。',
-            '水烧开，下豆腐煮 5 分钟。',
-            '下白菜，再煮 3 分钟。',
-            '加盐、几滴香油，关火撒葱花。'],
-    missing: [] },
-
-  { name: '青椒炒肉丝', time: '20 分钟', difficulty: '中等',
-    tags: ['青椒', '猪肉', '肉丝', '里脊', '辣'],
-    reason: '下饭利器。肉丝提前抓一下淀粉，口感完全不一样。',
-    steps: ['里脊切丝，加一勺生抽、半勺淀粉、一点水抓匀，腌 10 分钟。',
-            '青椒切丝，蒜切片。',
-            '热锅多油，下肉丝滑散，变色立刻盛出。',
-            '底油下青椒炒 1 分钟，倒回肉丝，加盐翻匀出锅。'],
-    missing: [] },
-
-  { name: '葱油拌面', time: '12 分钟', difficulty: '简单',
-    tags: ['面', '面条', '葱', '饿', '快'],
-    reason: '下班回家最省事的碳水，一口下去人就活了。',
-    steps: ['小葱切段，冷油下锅，小火慢炸到焦黄，约 8 分钟。',
-            '捞出葱段，油里加两勺生抽、半勺老抽、一勺糖，小火搅匀。',
-            '面条煮熟捞出，趁热拌上葱油。'],
-    missing: [] },
-
-  { name: '蒜蓉西兰花', time: '10 分钟', difficulty: '简单',
-    tags: ['西兰花', '花菜', '清淡', '素'],
-    reason: '十分钟能上桌的绿叶菜，焯水时加点盐颜色更绿。',
-    steps: ['西兰花掰小朵，淡盐水泡 5 分钟洗净。',
-            '水开加盐和几滴油，下西兰花焯 1 分钟，捞出过凉水。',
-            '热锅下油爆香蒜末，倒西兰花大火翻炒 1 分钟，加盐出锅。'],
-    missing: [] },
-
-  { name: '西红柿鸡蛋面', time: '15 分钟', difficulty: '简单',
-    tags: ['番茄', '西红柿', '鸡蛋', '面', '面条', '汤'],
-    reason: '一个人的时候最实在的一碗，从头到尾只洗一个锅。',
-    steps: ['番茄切块炒出汁，加两碗水烧开。',
-            '下面条煮到八分熟。',
-            '淋入打散的蛋液，不要搅，等它自己凝成蛋花。',
-            '加盐、白胡椒，撒葱花。'],
-    missing: [] },
-
-  { name: '干煸豆角', time: '25 分钟', difficulty: '中等',
-    tags: ['豆角', '四季豆', '辣', '下饭'],
-    reason: '很下饭，但豆角一定要煸透，生的有毒。',
-    steps: ['豆角掐头去尾，掰成段，洗净沥干水。',
-            '锅里少油，中小火煸豆角到表皮起皱发软，约 8 分钟，盛出。',
-            '底油下肉末、干辣椒、蒜末炒香。',
-            '倒回豆角，加生抽、盐，大火翻炒 2 分钟。'],
-    missing: ['肉末'] },
-
-  { name: '皮蛋豆腐', time: '5 分钟', difficulty: '简单',
-    tags: ['豆腐', '皮蛋', '凉菜', '快', '不用开火'],
-    reason: '完全不用开火，五分钟的事，夏天尤其舒服。',
-    steps: ['内酯豆腐倒扣在盘里，切块。',
-            '皮蛋切小块铺上去。',
-            '淋两勺生抽、一勺香油，撒葱花和一点辣椒油。'],
-    missing: ['皮蛋'] },
-
-  { name: '蛋炒饭', time: '12 分钟', difficulty: '简单',
-    tags: ['米饭', '剩饭', '鸡蛋', '葱', '快'],
-    reason: '剩饭的最好归宿。用隔夜饭，粒粒分明。',
-    steps: ['隔夜饭用手抓散，别结块。',
-            '鸡蛋打散，热锅多油炒成蛋块，盛出。',
-            '底油下米饭，中大火翻炒到粒粒跳动。',
-            '倒回鸡蛋，加盐、葱花，翻匀出锅。'],
-    missing: [] }
-];
-
 const $q = document.getElementById('q');
 const $go = document.getElementById('go');
 const $out = document.getElementById('out');
-const $rand = document.getElementById('rand');
 
-$rand.onclick = () => {
-  const pool = [
-    '冰箱里只有鸡蛋和一点葱',
-    '想吃辣的，但不想出门买菜',
-    '刚下班，只想 15 分钟内吃上饭',
-    '家里有土豆、胡萝卜、半个洋葱',
-    '想吃得清淡点，最好是汤'
-  ];
-  $q.value = pool[Math.floor(Math.random() * pool.length)];
-  $q.focus();
-};
+// 点标签 = 往输入框里加一句话，不覆盖你已经打的字
+document.querySelectorAll('.chip').forEach(c => {
+  c.onclick = () => {
+    const t = c.dataset.t;
+    $q.value = $q.value.trim() ? $q.value.trim() + '，' + t : t;
+    $q.focus();
+  };
+});
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 }
 
-// 打分：用户说的字里，命中了菜的标签就加分
-function pick(text) {
-  const t = text.toLowerCase();
-  const scored = DISHES.map(d => {
-    let score = 0;
-    d.tags.forEach(tag => { if (t.includes(tag.toLowerCase())) score += 2; });
-    if (t.includes(d.name)) score += 5;
-    return { d, score };
-  });
-
-  let hits = scored.filter(x => x.score > 0).sort((a, b) => b.score - a.score).map(x => x.d);
-  if (hits.length >= 3) return hits.slice(0, 3);
-
-  // 不够三道就随机补齐
-  const rest = DISHES.filter(d => !hits.includes(d));
-  rest.sort(() => Math.random() - 0.5);
-  return hits.concat(rest).slice(0, 3);
-}
-
-function render(dishes) {
-  if (!dishes.length) {
-    $out.innerHTML = '<div class="empty">没想出来，换个说法再试一次？</div>';
+function render(picks, note) {
+  if (!picks || !picks.length) {
+    $out.innerHTML = '<div class="empty">没找到合适的，换个说法再试一次？</div>';
     return;
   }
-  $out.innerHTML = dishes.map(d => {
-    const steps = d.steps.map(s => '<li>' + esc(s) + '</li>').join('');
-    const missing = d.missing && d.missing.length
-      ? '<div class="missing">还需要买：' + d.missing.map(esc).join('、') + '</div>' : '';
+  const noteHtml = note ? '<div class="note">' + esc(note) + '</div>' : '';
+  $out.innerHTML = noteHtml + picks.map(p => {
     return '<div class="card">'
-      + '<h3>' + esc(d.name)
-      + '<span class="meta">⏱ ' + esc(d.time) + '</span>'
-      + '<span class="meta">🔥 ' + esc(d.difficulty) + '</span>'
-      + '</h3>'
-      + '<p class="why">' + esc(d.reason) + '</p>'
-      + '<ol>' + steps + '</ol>'
-      + missing
+      + '<div class="shop">' + esc(p.shop || '') + '</div>'
+      + '<div class="dish">' + esc(p.dish || '')
+      + '<span class="price"><span>¥</span>' + esc(p.price == null ? '?' : p.price) + '</span>'
+      + '<span class="meta">' + esc(p.spicy || '') + '</span>'
+      + '</div>'
+      + '<p class="why">' + esc(p.why || '') + '</p>'
       + '</div>';
   }).join('');
 }
@@ -295,28 +202,28 @@ $go.onclick = async () => {
   if (!text) { $q.focus(); return; }
 
   $go.disabled = true;
-  $out.innerHTML = '<div class="empty">正在想…</div>';
+  $out.innerHTML = '<div class="empty">正在挑…</div>';
   $out.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   try {
-    const res = await fetch(BACKEND + '/api/recommend', {
+    const res = await fetch(BACKEND + '/api/pick', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text })
     });
     const data = await res.json();
     if (data.error) throw new Error(data.error);
-    render(data.dishes || []);
+    render(data.picks, data.note);
   } catch (e) {
-    // 后端挂了 / 隧道断了 / 电脑关机了 —— 退回本地表，至少还能用
-    render(pick(text));
-    $out.insertAdjacentHTML('beforeend',
-      '<div class="empty">（AI 这会儿连不上，先用本地菜谱表顶着）</div>');
+    render([], '');
+    $out.innerHTML = '<div class="note">连不上后端（AI 在你电脑上，电脑关了或者隧道断了）。'
+      + '等一会儿再点一次。</div>';
   } finally {
     $go.disabled = false;
   }
 };
 
+// Ctrl/Cmd + Enter 直接提交
 $q.addEventListener('keydown', e => {
   if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') $go.click();
 });
