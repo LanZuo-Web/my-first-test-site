@@ -79,6 +79,43 @@
     transition: color .15s;
   }
   .pick:hover { color: #ff6b35; }
+  .dd { position: relative; }
+  .dd .pick { display: inline-flex; align-items: center; gap: 10px; }
+  .menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: -12px;
+    min-width: 168px;
+    padding: 7px;
+    background: #fff;
+    border: 1px solid #ececf2;
+    border-radius: 16px;
+    box-shadow: 0 20px 46px rgba(31, 36, 48, .16);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px) scale(.98);
+    transform-origin: top left;
+    transition: opacity .16s, transform .16s, visibility .16s;
+    z-index: 40;
+  }
+  .dd.open .menu { opacity: 1; visibility: visible; transform: none; }
+  .menu button {
+    display: block;
+    width: 100%;
+    padding: 11px 14px;
+    border: 0;
+    border-radius: 10px;
+    background: none;
+    font: inherit;
+    font-size: 1.1rem;
+    color: #2b3142;
+    text-align: left;
+    cursor: pointer;
+    transition: background .12s, color .12s;
+  }
+  .menu button:hover { background: #fff5ee; color: #ff6b35; }
+  .menu button.on { background: #fff8f3; color: #ff6b35; font-weight: 700; }
+  .menu button.on::after { content: '✓'; float: right; font-size: .95rem; }
   .sep { width: 1px; background: #f0f0f5; margin: 12px 0; }
   .num {
     width: 3.1em;
@@ -396,27 +433,33 @@
     <div class="ask">
       <div class="seg">
         <span class="lbl">想吃</span>
-        <select id="fType" class="pick">
-          <option value="">都行</option>
-          <option value="饭">饭</option>
-          <option value="面">面</option>
-          <option value="粉">粉</option>
-          <option value="粥">粥</option>
-          <option value="饺">饺子</option>
-          <option value="包">包子汉堡</option>
-          <option value="小吃">小吃</option>
-        </select>
+        <div class="dd" id="ddType">
+          <button class="pick" type="button"><span class="val">都行</span></button>
+          <div class="menu">
+            <button type="button" data-v="" class="on">都行</button>
+            <button type="button" data-v="饭">饭</button>
+            <button type="button" data-v="面">面</button>
+            <button type="button" data-v="粉">粉</button>
+            <button type="button" data-v="粥">粥</button>
+            <button type="button" data-v="饺">饺子</button>
+            <button type="button" data-v="包">包子汉堡</button>
+            <button type="button" data-v="小吃">小吃</button>
+          </div>
+        </div>
       </div>
       <span class="sep"></span>
       <div class="seg">
         <span class="lbl">辣度</span>
-        <select id="fSpicy" class="pick">
-          <option value="">都行</option>
-          <option value="0">不辣</option>
-          <option value="1">微辣</option>
-          <option value="2">中辣</option>
-          <option value="3">特辣</option>
-        </select>
+        <div class="dd" id="ddSpicy">
+          <button class="pick" type="button"><span class="val">都行</span></button>
+          <div class="menu">
+            <button type="button" data-v="" class="on">都行</button>
+            <button type="button" data-v="0">不辣</button>
+            <button type="button" data-v="1">微辣</button>
+            <button type="button" data-v="2">中辣</button>
+            <button type="button" data-v="3">特辣</button>
+          </div>
+        </div>
       </div>
       <span class="sep"></span>
       <div class="seg">
@@ -451,7 +494,43 @@ const SPICY = ['不辣', '微辣', '中辣', '特辣'];
 
 const $ = id => document.getElementById(id);
 const $go = $('go'), $out = $('out'), $dice = $('dice');
-const $fType = $('fType'), $fSpicy = $('fSpicy'), $fMin = $('fMin'), $fMax = $('fMax');
+const $fMin = $('fMin'), $fMax = $('fMax');
+
+/* ---------- 自定义下拉（原生 select 的弹层没法改样式，太丑） ---------- */
+const DD = [];
+function initDD(id) {
+  const root = $(id);
+  const trigger = root.querySelector('.pick');
+  const valEl = trigger.querySelector('.val');
+  const items = Array.from(root.querySelectorAll('.menu button'));
+  const state = { root, trigger, valEl, items, value: '' };
+
+  trigger.onclick = (e) => {
+    e.stopPropagation();
+    const willOpen = !root.classList.contains('open');
+    closeAllDD();
+    if (willOpen) root.classList.add('open');
+  };
+
+  items.forEach(btn => {
+    btn.onclick = (e) => {
+      e.stopPropagation();
+      state.value = btn.dataset.v;
+      valEl.textContent = btn.textContent.trim();
+      items.forEach(b => b.classList.toggle('on', b === btn));
+      root.classList.remove('open');
+    };
+  });
+
+  DD.push(state);
+  return state;
+}
+function closeAllDD() { DD.forEach(d => d.root.classList.remove('open')); }
+document.addEventListener('click', closeAllDD);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAllDD(); });
+
+const ddType = initDD('ddType');
+const ddSpicy = initDD('ddSpicy');
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -586,8 +665,8 @@ function recommend(cr) {
 
 /* ---------- 帮我选（本地计算，不联网） ---------- */
 $go.onclick = () => {
-  const type = $fType.value || null;
-  const sp = $fSpicy.value === '' ? null : Number($fSpicy.value);
+  const type = ddType.value || null;
+  const sp = ddSpicy.value === '' ? null : Number(ddSpicy.value);
   const mn = $fMin.value === '' ? null : Number($fMin.value);
   const mx = $fMax.value === '' ? null : Number($fMax.value);
   $go.disabled = true;
