@@ -156,24 +156,62 @@
   button.go:disabled { opacity: .55; cursor: default; transform: none; }
   .tag { font-size: .82rem; color: #9aa1b2; }
 
-  #out { width: 100%; max-width: 620px; margin-top: 30px; }
+  #out {
+    width: 100%;
+    max-width: 900px;
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+    align-items: stretch;
+  }
+  #out .note { grid-column: 1 / -1; }
+  #out .empty { grid-column: 1 / -1; }
   .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 1 / 1;
+    padding: 20px 20px 18px;
     background: #fff;
     border: 1px solid #f0f0f5;
-    border-radius: 16px;
-    padding: 18px 22px 20px;
-    margin-bottom: 14px;
-    box-shadow: 0 12px 34px -20px rgba(31, 36, 48, .38);
-    animation: in .3s ease both;
+    border-radius: 20px;
+    box-shadow: 0 14px 38px -22px rgba(31, 36, 48, .42);
+    animation: pop .36s cubic-bezier(.2, .8, .3, 1.15) both;
+    transition: transform .18s, box-shadow .18s;
   }
-  @keyframes in { from { opacity: 0; transform: translateY(10px); } }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 46px -22px rgba(31, 36, 48, .45);
+  }
+  .card:nth-child(2) { animation-delay: .07s; }
+  .card:nth-child(3) { animation-delay: .14s; }
+  .card:nth-child(4) { animation-delay: .21s; }
+  @keyframes pop {
+    from { opacity: 0; transform: translateY(14px) scale(.93); }
+    to   { opacity: 1; transform: none; }
+  }
+  @media (max-width: 900px) {
+    #out { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 600px) {
+    #out { grid-template-columns: 1fr; }
+    .card { aspect-ratio: auto; }
+  }
   .shop {
     font-size: .78rem; color: #ff8a4c; font-weight: 600;
     letter-spacing: .02em; margin-bottom: 6px;
   }
   .dish {
-    font-size: 1.24rem; font-weight: 700;
-    display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap;
+    font-size: 1.2rem; font-weight: 700; line-height: 1.45;
+    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 2px;
+  }
+  .dish .name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .price { font-size: 1rem; color: #ff3d71; font-weight: 700; }
   .price span { font-size: .78rem; font-weight: 500; }
@@ -183,8 +221,12 @@
     vertical-align: middle;
   }
   .why {
-    margin-top: 10px;
-    font-size: .9rem; color: #5c6478; line-height: 1.75;
+    margin-top: 8px;
+    font-size: .86rem; color: #5c6478; line-height: 1.7;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
   .note {
     text-align: center; color: #b26a00; font-size: .86rem;
@@ -359,8 +401,8 @@
   .m-copy:hover { background: #e9e3ff; }
 
   .card .copy {
-    margin-top: 10px;
-    padding: 7px 12px;
+    margin-top: auto;
+    padding: 9px 12px;
     font-family: inherit;
     font-size: .8rem;
     font-weight: 700;
@@ -546,7 +588,7 @@ function render(picks, note) {
   $out.innerHTML = noteHtml + picks.map(p =>
     '<div class="card">'
     + '<div class="shop">' + esc(p.shop || '') + '</div>'
-    + '<div class="dish">' + esc(p.dish || '')
+    + '<div class="dish"><span class="name">' + esc(p.dish || '') + '</span>'
     + '<span class="price"><span>¥</span>' + esc(p.price == null ? '?' : p.price) + '</span>'
     + '<span class="meta">' + esc(p.spicy || '') + '</span>'
     + '</div>'
