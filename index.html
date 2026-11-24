@@ -52,14 +52,14 @@
     flex-wrap: wrap;
     width: 100%;
   }
-  .line.sub {
-    border-top: 1px solid #f3f3f8;
-    margin-top: 4px;
-    padding: 6px 10px 4px;
+  .line.lead {
+    border-bottom: 1px solid #f3f3f8;
+    margin-bottom: 4px;
+    padding: 2px 10px 8px;
     gap: 12px;
   }
-  .line.sub .lbl { padding-left: 14px; }
-  .line.sub .menu { max-height: 320px; overflow: auto; }
+  .line.lead .lbl { padding-left: 14px; }
+  .line.lead .menu { max-height: 320px; overflow: auto; }
   .menu.wide { min-width: 240px; }
   .menu.wide button { display: flex; justify-content: space-between; gap: 10px; }
   .menu.wide button .area { color: #a6acbd; font-size: .8rem; font-weight: 500; }
@@ -490,6 +490,19 @@
 
   <div class="box">
     <div class="ask">
+      <div class="line lead">
+        <span class="lbl">大区</span>
+        <div class="dd" id="ddArea">
+          <button class="pick" type="button"><span class="val">全部大区</span></button>
+          <div class="menu wide" id="areaMenu"></div>
+        </div>
+        <span class="sep"></span>
+        <span class="lbl">店铺</span>
+        <div class="dd" id="ddShop">
+          <button class="pick" type="button"><span class="val">全部店铺</span></button>
+          <div class="menu wide" id="shopMenu"></div>
+        </div>
+      </div>
       <div class="line top">
       <div class="seg">
         <span class="lbl">想吃</span>
@@ -530,19 +543,6 @@
         <span class="unit">元</span>
       </div>
       <button class="go" id="go">帮我选</button>
-      </div>
-      <div class="line sub">
-        <span class="lbl">大区</span>
-        <div class="dd" id="ddArea">
-          <button class="pick" type="button"><span class="val">全部大区</span></button>
-          <div class="menu wide" id="areaMenu"></div>
-        </div>
-        <span class="sep"></span>
-        <span class="lbl">店铺</span>
-        <div class="dd" id="ddShop">
-          <button class="pick" type="button"><span class="val">全部店铺</span></button>
-          <div class="menu wide" id="shopMenu"></div>
-        </div>
       </div>
     </div>
 
