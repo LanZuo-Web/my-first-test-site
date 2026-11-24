@@ -532,9 +532,15 @@
       <button class="go" id="go">帮我选</button>
       </div>
       <div class="line sub">
-        <span class="lbl">餐厅</span>
+        <span class="lbl">大区</span>
+        <div class="dd" id="ddArea">
+          <button class="pick" type="button"><span class="val">全部大区</span></button>
+          <div class="menu wide" id="areaMenu"></div>
+        </div>
+        <span class="sep"></span>
+        <span class="lbl">店铺</span>
         <div class="dd" id="ddShop">
-          <button class="pick" type="button"><span class="val">全部餐厅</span></button>
+          <button class="pick" type="button"><span class="val">全部店铺</span></button>
           <div class="menu wide" id="shopMenu"></div>
         </div>
       </div>
@@ -566,56 +572,72 @@ const $fMin = $('fMin'), $fMax = $('fMax');
 
 /* ---------- 自定义下拉（原生 select 的弹层没法改样式，太丑） ---------- */
 const DD = [];
-function initDD(id) {
+function closeAllDD() { DD.forEach(d => d.root.classList.remove('open')); }
+document.addEventListener('click', closeAllDD);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAllDD(); });
+
+function makeDD(id, items, onPick) {
   const root = $(id);
   const trigger = root.querySelector('.pick');
   const valEl = trigger.querySelector('.val');
-  const items = Array.from(root.querySelectorAll('.menu button'));
-  const state = { root, trigger, valEl, items, value: '' };
+  const menu = root.querySelector('.menu');
 
+  menu.innerHTML = items.map((it, i) =>
+    '<button type="button" data-v="' + esc(it.v) + '" data-label="' + esc(it.label) + '"' + (i === 0 ? ' class="on"' : '') + '>' +
+    '<span>' + esc(it.label) + '</span>' +
+    (it.note ? '<span class="area">' + esc(it.note) + '</span>' : '') +
+    '</button>').join('');
+
+  const state = { root, value: items.length ? items[0].v : '' };
+  valEl.textContent = items.length ? items[0].label : '';
+
+  const btns = Array.from(menu.querySelectorAll('button'));
   trigger.onclick = (e) => {
     e.stopPropagation();
     const willOpen = !root.classList.contains('open');
     closeAllDD();
     if (willOpen) root.classList.add('open');
   };
-
-  items.forEach(btn => {
-    btn.onclick = (e) => {
+  btns.forEach(b => {
+    b.onclick = (e) => {
       e.stopPropagation();
-      state.value = btn.dataset.v;
-      valEl.textContent = btn.dataset.label || btn.textContent.trim();
-      items.forEach(b => b.classList.toggle('on', b === btn));
+      state.value = b.dataset.v;
+      valEl.textContent = b.dataset.label;
+      btns.forEach(x => x.classList.toggle('on', x === b));
       root.classList.remove('open');
+      if (onPick) onPick(state.value);
     };
   });
 
-  DD.push(state);
+  const idx = DD.findIndex(d => d.root === root);
+  if (idx >= 0) DD[idx] = state; else DD.push(state);
   return state;
 }
-function closeAllDD() { DD.forEach(d => d.root.classList.remove('open')); }
-document.addEventListener('click', closeAllDD);
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAllDD(); });
 
-const ddType = initDD('ddType');
-const ddSpicy = initDD('ddSpicy');
+const ddType = makeDD('ddType', [
+  { v: '', label: '都行' }, { v: '饭', label: '饭' }, { v: '面', label: '面' }, { v: '粉', label: '粉' },
+  { v: '粥', label: '粥' }, { v: '饺', label: '饺子' }, { v: '包', label: '包子汉堡' }, { v: '小吃', label: '小吃' }
+]);
+const ddSpicy = makeDD('ddSpicy', [
+  { v: '', label: '都行' }, { v: '0', label: '不辣' }, { v: '1', label: '微辣' },
+  { v: '2', label: '中辣' }, { v: '3', label: '特辣' }
+]);
 
-/* 店名形如「丽园轩餐厅 · 手工米粉」，菜单里显示短名、用全名做筛选键 */
-function shortShop(s) { return String(s || '').split('·').pop().trim(); }
-function areaOf(s) { const a = String(s || '').split('·'); return a.length > 1 ? a[0].trim() : ''; }
+/* 店名形如「丽园轩餐厅 · 手工米粉」：显示短名，筛选用全名 */
+const shortShop = s => String(s || '').split('·').pop().trim();
+const areaOf = s => { const a = String(s || '').split('·'); return a.length > 1 ? a[0].trim() : ''; };
+const AREAS = Array.from(new Set(MENU.shops.map(s => areaOf(s.name))));
+const shopsIn = area => MENU.shops.filter(s => !area || areaOf(s.name) === area);
 
-/* 餐厅下拉：从菜单里动态生成 */
-(function buildShopMenu() {
-  const menu = $('shopMenu');
-  if (!menu) return;
-  const rows = [['', '全部餐厅', '']].concat(MENU.shops.map(s => [s.name, shortShop(s.name), areaOf(s.name)]));
-  menu.innerHTML = rows.map((r, i) =>
-    '<button type="button" data-v="' + esc(r[0]) + '" data-label="' + esc(r[1]) + '"' + (i === 0 ? ' class="on"' : '') + '>' +
-    '<span>' + esc(r[1]) + '</span>' +
-    (r[2] ? '<span class="area">' + esc(r[2]) + '</span>' : '') +
-    '</button>').join('');
-})();
-const ddShop = initDD('ddShop');
+let ddArea = null, ddShop = null;
+function fillShops(area) {
+  ddShop = makeDD('ddShop',
+    [{ v: '', label: '全部店铺' }].concat(shopsIn(area).map(s => ({ v: s.name, label: shortShop(s.name) }))));
+}
+ddArea = makeDD('ddArea',
+  [{ v: '', label: '全部大区' }].concat(AREAS.map(a => ({ v: a, label: a }))),
+  (v) => fillShops(v));
+fillShops('');
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -663,11 +685,13 @@ function recommend(cr) {
   const min = (cr.min === undefined || cr.min === null || isNaN(cr.min)) ? null : cr.min;
   const max = (cr.max === undefined || cr.max === null || isNaN(cr.max)) ? null : cr.max;
   const shopFilter = cr.shop || null;
-  const loose = (!type && spicyTarget == null && min == null && max == null && !shopFilter);
+  const areaFilter = cr.area || null;
+  const loose = (!type && spicyTarget == null && min == null && max == null && !shopFilter && !areaFilter);
 
   const pool = [];
   MENU.shops.forEach(shop => {
     if (shopFilter && shop.name !== shopFilter) return;
+    if (!shopFilter && areaFilter && areaOf(shop.name) !== areaFilter) return;
     return shop.dishes.forEach(d => {
     const nm = d.name || '';
     if (nm.length > 24) return;                     // 抄录时截断的长名，数据脏
@@ -726,6 +750,7 @@ function recommend(cr) {
 
   const cond = [];
   if (shopFilter) cond.push(shortShop(shopFilter));
+  else if (areaFilter) cond.push(areaFilter);
   if (type) cond.push(type);
   if (spicyTarget != null) cond.push(SPICY[spicyTarget]);
   if (min != null && max != null) cond.push(min + '–' + max + ' 元');
@@ -760,9 +785,10 @@ $go.onclick = () => {
   const mn = $fMin.value === '' ? null : Number($fMin.value);
   const mx = $fMax.value === '' ? null : Number($fMax.value);
   const shopSel = ddShop.value || null;
+  const areaSel = ddArea.value || null;
   $go.disabled = true;
   try {
-    const r = recommend({ type: type, spicy: sp, min: mn, max: mx, shop: shopSel || null });
+    const r = recommend({ type: type, spicy: sp, min: mn, max: mx, shop: shopSel || null, area: shopSel ? null : (areaSel || null) });
     render(r.picks, r.note);
   } finally {
     $go.disabled = false;
