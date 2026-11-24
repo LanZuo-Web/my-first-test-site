@@ -38,15 +38,32 @@
   .box { width: 100%; max-width: 780px; margin-top: 34px; }
   .ask {
     display: flex;
-    align-items: stretch;
-    flex-wrap: wrap;
+    flex-direction: column;
     width: 100%;
-    padding: 10px 10px 10px 8px;
+    padding: 8px 10px;
     background: #fff;
     border: 1.5px solid #ececf2;
     border-radius: 24px;
     box-shadow: 0 10px 34px rgba(31, 36, 48, .08);
   }
+  .line {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .line.sub {
+    border-top: 1px solid #f3f3f8;
+    margin-top: 4px;
+    padding: 6px 10px 4px;
+    gap: 12px;
+  }
+  .line.sub .lbl { padding-left: 14px; }
+  .line.sub .menu { max-height: 320px; overflow: auto; }
+  .menu.wide { min-width: 240px; }
+  .menu.wide button { display: flex; justify-content: space-between; gap: 10px; }
+  .menu.wide button .area { color: #a6acbd; font-size: .8rem; font-weight: 500; }
+  .menu.wide button.on .area { color: #ffb08a; }
   .seg {
     display: flex;
     align-items: center;
@@ -473,6 +490,7 @@
 
   <div class="box">
     <div class="ask">
+      <div class="line top">
       <div class="seg">
         <span class="lbl">想吃</span>
         <div class="dd" id="ddType">
@@ -512,6 +530,14 @@
         <span class="unit">元</span>
       </div>
       <button class="go" id="go">帮我选</button>
+      </div>
+      <div class="line sub">
+        <span class="lbl">餐厅</span>
+        <div class="dd" id="ddShop">
+          <button class="pick" type="button"><span class="val">全部餐厅</span></button>
+          <div class="menu wide" id="shopMenu"></div>
+        </div>
+      </div>
     </div>
 
   </div>
@@ -558,7 +584,7 @@ function initDD(id) {
     btn.onclick = (e) => {
       e.stopPropagation();
       state.value = btn.dataset.v;
-      valEl.textContent = btn.textContent.trim();
+      valEl.textContent = btn.dataset.label || btn.textContent.trim();
       items.forEach(b => b.classList.toggle('on', b === btn));
       root.classList.remove('open');
     };
@@ -573,6 +599,23 @@ document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeAllDD
 
 const ddType = initDD('ddType');
 const ddSpicy = initDD('ddSpicy');
+
+/* 店名形如「丽园轩餐厅 · 手工米粉」，菜单里显示短名、用全名做筛选键 */
+function shortShop(s) { return String(s || '').split('·').pop().trim(); }
+function areaOf(s) { const a = String(s || '').split('·'); return a.length > 1 ? a[0].trim() : ''; }
+
+/* 餐厅下拉：从菜单里动态生成 */
+(function buildShopMenu() {
+  const menu = $('shopMenu');
+  if (!menu) return;
+  const rows = [['', '全部餐厅', '']].concat(MENU.shops.map(s => [s.name, shortShop(s.name), areaOf(s.name)]));
+  menu.innerHTML = rows.map((r, i) =>
+    '<button type="button" data-v="' + esc(r[0]) + '" data-label="' + esc(r[1]) + '"' + (i === 0 ? ' class="on"' : '') + '>' +
+    '<span>' + esc(r[1]) + '</span>' +
+    (r[2] ? '<span class="area">' + esc(r[2]) + '</span>' : '') +
+    '</button>').join('');
+})();
+const ddShop = initDD('ddShop');
 
 function esc(s) {
   return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -619,10 +662,13 @@ function recommend(cr) {
   const spicyTarget = (cr.spicy === undefined || cr.spicy === null) ? null : cr.spicy;
   const min = (cr.min === undefined || cr.min === null || isNaN(cr.min)) ? null : cr.min;
   const max = (cr.max === undefined || cr.max === null || isNaN(cr.max)) ? null : cr.max;
-  const loose = (!type && spicyTarget == null && min == null && max == null);
+  const shopFilter = cr.shop || null;
+  const loose = (!type && spicyTarget == null && min == null && max == null && !shopFilter);
 
   const pool = [];
-  MENU.shops.forEach(shop => shop.dishes.forEach(d => {
+  MENU.shops.forEach(shop => {
+    if (shopFilter && shop.name !== shopFilter) return;
+    return shop.dishes.forEach(d => {
     const nm = d.name || '';
     if (nm.length > 24) return;                     // 抄录时截断的长名，数据脏
     const price = d.price;
@@ -660,7 +706,8 @@ function recommend(cr) {
     if (ADDONISH.test(nm) && price < 3) score -= 30;   // 0.7 元一个的馅料不该排在饭前面
 
     pool.push({ shop: shop.name, dish: nm, price: price, spicy: d.spicy || 0, cat: d.cat, score: score + Math.random() * 3, why });
-  }));
+    });
+  });
   pool.sort((a, b) => b.score - a.score);
 
   const picked = [];
@@ -678,6 +725,7 @@ function recommend(cr) {
   }
 
   const cond = [];
+  if (shopFilter) cond.push(shortShop(shopFilter));
   if (type) cond.push(type);
   if (spicyTarget != null) cond.push(SPICY[spicyTarget]);
   if (min != null && max != null) cond.push(min + '–' + max + ' 元');
@@ -711,9 +759,10 @@ $go.onclick = () => {
   const sp = ddSpicy.value === '' ? null : Number(ddSpicy.value);
   const mn = $fMin.value === '' ? null : Number($fMin.value);
   const mx = $fMax.value === '' ? null : Number($fMax.value);
+  const shopSel = ddShop.value || null;
   $go.disabled = true;
   try {
-    const r = recommend({ type: type, spicy: sp, min: mn, max: mx });
+    const r = recommend({ type: type, spicy: sp, min: mn, max: mx, shop: shopSel || null });
     render(r.picks, r.note);
   } finally {
     $go.disabled = false;
