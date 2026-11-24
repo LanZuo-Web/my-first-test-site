@@ -491,9 +491,9 @@
   <div class="box">
     <div class="ask">
       <div class="line lead">
-        <span class="lbl">大区</span>
+        <span class="lbl">食堂</span>
         <div class="dd" id="ddArea">
-          <button class="pick" type="button"><span class="val">全部大区</span></button>
+          <button class="pick" type="button"><span class="val">全部食堂</span></button>
           <div class="menu wide" id="areaMenu"></div>
         </div>
         <span class="sep"></span>
@@ -635,7 +635,7 @@ function fillShops(area) {
     [{ v: '', label: '全部店铺' }].concat(shopsIn(area).map(s => ({ v: s.name, label: shortShop(s.name) }))));
 }
 ddArea = makeDD('ddArea',
-  [{ v: '', label: '全部大区' }].concat(AREAS.map(a => ({ v: a, label: a }))),
+  [{ v: '', label: '全部食堂' }].concat(AREAS.map(a => ({ v: a, label: a }))),
   (v) => fillShops(v));
 fillShops('');
 
