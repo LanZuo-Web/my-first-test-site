@@ -36,39 +36,72 @@
     line-height: 1.75;
   }
   .box { width: 100%; max-width: 620px; margin-top: 30px; }
-  .sentence {
+  .ask {
+    display: flex;
+    align-items: stretch;
+    flex-wrap: wrap;
     width: 100%;
-    padding: 20px 22px;
-    font-size: 1.06rem;
-    line-height: 2.4;
-    color: #2b3142;
+    padding: 8px 8px 8px 6px;
     background: #fff;
     border: 1.5px solid #ececf2;
-    border-radius: 18px;
-    box-shadow: 0 2px 12px rgba(31, 36, 48, .045);
+    border-radius: 20px;
+    box-shadow: 0 8px 28px rgba(31, 36, 48, .07);
   }
-  .slot {
-    font-size: 1.02rem;
-    font-family: inherit;
-    color: #ff6b35;
-    font-weight: 600;
-    background: #fff7f2;
-    border: none;
-    border-bottom: 2px solid #ffc7a3;
-    border-radius: 8px 8px 0 0;
-    padding: 4px 10px;
-    margin: 0 2px;
+  .seg {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 16px;
+    min-height: 46px;
+  }
+  .seg .lbl {
+    font-size: .78rem;
+    color: #9aa0b0;
+    letter-spacing: .02em;
+    white-space: nowrap;
+  }
+  .pick {
+    font: inherit;
+    font-weight: 700;
+    color: #1f2430;
+    background: transparent;
+    border: 0;
     outline: none;
     cursor: pointer;
-    transition: background .15s, border-color .15s;
+    padding: 0 18px 0 0;
     -webkit-appearance: none;
     appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, #b9bfd0 50%), linear-gradient(135deg, #b9bfd0 50%, transparent 50%);
+    background-position: calc(100% - 7px) 58%, calc(100% - 3px) 58%;
+    background-size: 4px 4px, 4px 4px;
+    background-repeat: no-repeat;
+    transition: color .15s;
   }
-  .slot:hover { background: #ffefe4; border-bottom-color: #ff9a5c; }
-  .slot:focus { background: #ffefe4; border-bottom-color: #ff6b35; }
-  input.slot.num { width: 74px; text-align: center; cursor: text; }
-  input.slot.num::placeholder { color: #c9c9d4; font-weight: 400; }
-  select.slot { padding-right: 22px; background-image: linear-gradient(45deg, transparent 50%, #ff9a5c 50%), linear-gradient(135deg, #ff9a5c 50%, transparent 50%); background-position: calc(100% - 12px) 55%, calc(100% - 7px) 55%; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+  .pick:hover { color: #ff6b35; }
+  .sep { width: 1px; background: #f0f0f5; margin: 10px 0; }
+  .num {
+    width: 2.7em;
+    font: inherit;
+    font-weight: 700;
+    color: #1f2430;
+    text-align: center;
+    background: transparent;
+    border: 0;
+    border-bottom: 1.5px dashed #d8dae5;
+    outline: none;
+    padding: 2px 0;
+    transition: border-color .15s, color .15s;
+  }
+  .num:focus { border-bottom-color: #ff6b35; color: #ff6b35; }
+  .num::placeholder { color: #c9cdd9; font-weight: 500; }
+  .dash { color: #c3c7d4; margin: 0 4px; }
+  .unit { color: #9aa0b0; font-size: .85rem; }
+  .ask .go { margin-left: auto; align-self: center; padding: 12px 22px; border-radius: 14px; }
+  @media (max-width: 560px) {
+    .sep { display: none; }
+    .seg { padding: 8px 10px; }
+    .ask .go { width: 100%; margin: 6px 0 0; }
+  }
   .row { display: flex; gap: 12px; margin-top: 14px; align-items: center; flex-wrap: wrap; }
   button.go {
     padding: 13px 30px;
@@ -357,29 +390,40 @@
   <p class="sub">选一下想吃的类型、辣度和预算，我给你挑三道。</p>
 
   <div class="box">
-    <div class="sentence">
-      我想吃
-      <select id="fType" class="slot">
-        <option value="">随便（饭面都行）</option>
-        <option value="饭">饭</option>
-        <option value="面">面</option>
-        <option value="粉">粉</option>
-        <option value="粥">粥</option>
-        <option value="饺">饺子</option>
-        <option value="包">包子 / 汉堡</option>
-        <option value="小吃">小吃</option>
-      </select>
-      ，辣度
-      <select id="fSpicy" class="slot">
-        <option value="">都行</option>
-        <option value="0">不辣</option>
-        <option value="1">微辣</option>
-        <option value="2">中辣</option>
-        <option value="3">特辣</option>
-      </select>
-      ，价格区间
-      <input id="fMin" class="slot num" type="number" inputmode="numeric" min="0" placeholder="不限"> 到
-      <input id="fMax" class="slot num" type="number" inputmode="numeric" min="0" placeholder="不限"> 元
+    <div class="ask">
+      <div class="seg">
+        <span class="lbl">想吃</span>
+        <select id="fType" class="pick">
+          <option value="">都行</option>
+          <option value="饭">饭</option>
+          <option value="面">面</option>
+          <option value="粉">粉</option>
+          <option value="粥">粥</option>
+          <option value="饺">饺子</option>
+          <option value="包">包子汉堡</option>
+          <option value="小吃">小吃</option>
+        </select>
+      </div>
+      <span class="sep"></span>
+      <div class="seg">
+        <span class="lbl">辣度</span>
+        <select id="fSpicy" class="pick">
+          <option value="">都行</option>
+          <option value="0">不辣</option>
+          <option value="1">微辣</option>
+          <option value="2">中辣</option>
+          <option value="3">特辣</option>
+        </select>
+      </div>
+      <span class="sep"></span>
+      <div class="seg">
+        <span class="lbl">预算</span>
+        <input id="fMin" class="num" type="number" inputmode="numeric" min="0" placeholder="不限">
+        <span class="dash">~</span>
+        <input id="fMax" class="num" type="number" inputmode="numeric" min="0" placeholder="不限">
+        <span class="unit">元</span>
+      </div>
+      <button class="go" id="go">帮我选</button>
     </div>
 
     <div class="row">
