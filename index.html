@@ -265,6 +265,36 @@
   .m-close:hover { background: #e9ebf2; }
   .modal button:active { transform: scale(.98); }
 
+  .m-copy {
+    margin-top: 14px;
+    width: 100%;
+    padding: 11px 0;
+    font-family: inherit;
+    font-size: .88rem;
+    font-weight: 700;
+    color: #6b5bd6;
+    background: #f1eeff;
+    border: 1px dashed #c9bdf5;
+    border-radius: 12px;
+    cursor: pointer;
+  }
+  .m-copy:hover { background: #e9e3ff; }
+
+  .card .copy {
+    margin-top: 10px;
+    padding: 7px 12px;
+    font-family: inherit;
+    font-size: .8rem;
+    font-weight: 700;
+    color: #6b5bd6;
+    background: #f1eeff;
+    border: 1px dashed #c9bdf5;
+    border-radius: 9px;
+    cursor: pointer;
+  }
+  .card .copy:hover { background: #e9e3ff; }
+  .card .copy.done { color: #147a3d; background: #e6f7ec; border-color: #a9dcbd; }
+
   /* ---- 设置密钥的弹窗，样式另算 ---- */
   #keyset .modal { text-align: left; }
   #keyset .k-title { font-size: 1.15rem; font-weight: 800; margin-bottom: 6px; }
@@ -311,6 +341,7 @@
         <div class="m-spicy" id="m-spicy"></div>
       </div>
       <p class="m-why" id="m-why"></p>
+      <button class="m-copy" id="m-copy">📋 复制菜名，去小程序搜</button>
       <div class="m-btns">
         <button class="m-again" id="m-again">再抽一次</button>
         <button class="m-close" id="m-close">就吃这个</button>
@@ -434,6 +465,7 @@ function render(picks, note) {
     + '<span class="meta">' + esc(p.spicy || '') + '</span>'
     + '</div>'
     + '<p class="why">' + esc(p.why || '') + '</p>'
+    + '<button class="copy" data-dish="' + esc(p.dish || '') + '">📋 复制菜名，去小程序搜</button>'
     + '</div>').join('');
 }
 
@@ -547,7 +579,9 @@ function luckyPick(shops) {
 }
 
 const $mask = $('mask');
+let lastPick = null;
 function openModal(one) {
+  lastPick = one;
   $('m-shop').textContent = one.shop;
   $('m-dish').textContent = one.dish;
   $('m-price').innerHTML = '<span>¥</span>' + esc(one.price);
@@ -572,6 +606,39 @@ async function roll() {
 }
 $('m-again').onclick = () => roll();
 $dice.onclick = roll;
+
+/* ---------- 复制菜名（跳到小程序里搜） ---------- */
+function copyDish(btn, dish) {
+  const ok = () => {
+    const old = btn.textContent;
+    btn.textContent = '✅ 已复制，去小程序搜索框粘贴';
+    btn.classList.add('done');
+    setTimeout(() => { btn.textContent = old; btn.classList.remove('done'); }, 1800);
+  };
+  const fallback = () => {
+    const ta = document.createElement('textarea');
+    ta.value = dish;
+    ta.style.position = 'fixed';
+    ta.style.left = '-9999px';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); } catch (e) {}
+    document.body.removeChild(ta);
+    ok();
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(dish).then(ok, fallback);
+  } else {
+    fallback();
+  }
+}
+$out.addEventListener('click', e => {
+  const b = e.target.closest('.copy');
+  if (b) copyDish(b, b.dataset.dish || '');
+});
+$('m-copy').onclick = function () {
+  if (lastPick) copyDish(this, lastPick.dish);
+};
 </script>
 </body>
 </html>
