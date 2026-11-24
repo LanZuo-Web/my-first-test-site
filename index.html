@@ -35,72 +35,75 @@
     text-align: center;
     line-height: 1.75;
   }
-  .box { width: 100%; max-width: 620px; margin-top: 30px; }
+  .box { width: 100%; max-width: 780px; margin-top: 34px; }
   .ask {
     display: flex;
     align-items: stretch;
     flex-wrap: wrap;
     width: 100%;
-    padding: 8px 8px 8px 6px;
+    padding: 10px 10px 10px 8px;
     background: #fff;
     border: 1.5px solid #ececf2;
-    border-radius: 20px;
-    box-shadow: 0 8px 28px rgba(31, 36, 48, .07);
+    border-radius: 24px;
+    box-shadow: 0 10px 34px rgba(31, 36, 48, .08);
   }
   .seg {
     display: flex;
     align-items: center;
-    gap: 9px;
-    padding: 10px 16px;
-    min-height: 46px;
+    gap: 12px;
+    padding: 16px 24px;
+    min-height: 60px;
   }
   .seg .lbl {
-    font-size: .78rem;
+    font-size: .92rem;
     color: #9aa0b0;
     letter-spacing: .02em;
     white-space: nowrap;
   }
   .pick {
     font: inherit;
+    font-size: 1.24rem;
     font-weight: 700;
     color: #1f2430;
     background: transparent;
     border: 0;
     outline: none;
     cursor: pointer;
-    padding: 0 18px 0 0;
+    padding: 0 22px 0 0;
     -webkit-appearance: none;
     appearance: none;
     background-image: linear-gradient(45deg, transparent 50%, #b9bfd0 50%), linear-gradient(135deg, #b9bfd0 50%, transparent 50%);
-    background-position: calc(100% - 7px) 58%, calc(100% - 3px) 58%;
-    background-size: 4px 4px, 4px 4px;
+    background-position: calc(100% - 9px) 56%, calc(100% - 4px) 56%;
+    background-size: 5px 5px, 5px 5px;
     background-repeat: no-repeat;
     transition: color .15s;
   }
   .pick:hover { color: #ff6b35; }
-  .sep { width: 1px; background: #f0f0f5; margin: 10px 0; }
+  .sep { width: 1px; background: #f0f0f5; margin: 12px 0; }
   .num {
-    width: 2.7em;
+    width: 3.1em;
     font: inherit;
+    font-size: 1.24rem;
     font-weight: 700;
     color: #1f2430;
     text-align: center;
     background: transparent;
     border: 0;
-    border-bottom: 1.5px dashed #d8dae5;
+    border-bottom: 2px dashed #d8dae5;
     outline: none;
     padding: 2px 0;
     transition: border-color .15s, color .15s;
   }
   .num:focus { border-bottom-color: #ff6b35; color: #ff6b35; }
   .num::placeholder { color: #c9cdd9; font-weight: 500; }
-  .dash { color: #c3c7d4; margin: 0 4px; }
-  .unit { color: #9aa0b0; font-size: .85rem; }
-  .ask .go { margin-left: auto; align-self: center; padding: 12px 22px; border-radius: 14px; }
-  @media (max-width: 560px) {
+  .dash { color: #c3c7d4; margin: 0 6px; font-size: 1.1rem; }
+  .unit { color: #9aa0b0; font-size: 1rem; }
+  .ask .go { margin-left: auto; align-self: center; padding: 16px 34px; border-radius: 16px; font-size: 1.12rem; }
+  @media (max-width: 680px) {
     .sep { display: none; }
-    .seg { padding: 8px 10px; }
-    .ask .go { width: 100%; margin: 6px 0 0; }
+    .seg { padding: 10px 12px; min-height: 52px; }
+    .pick, .num { font-size: 1.1rem; }
+    .ask .go { width: 100%; margin: 8px 0 0; }
   }
   .row { display: flex; gap: 12px; margin-top: 14px; align-items: center; flex-wrap: wrap; }
   button.go {
