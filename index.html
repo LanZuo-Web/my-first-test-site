@@ -929,7 +929,7 @@ $go.onclick = runPick;
   const areas = new Set(MENU.shops.map(s => areaOf(s.name))).size;
   const el = $('dataNote');
   if (el) el.innerHTML = '已收录 <b>' + shops + '</b> 家店 · <b>' + dishes + '</b> 道菜 · '
-    + areas + ' 个食堂 · 全部在本地算，不联网';
+    + areas + ' 个食堂';
 })();
 
 /* ---------- 随机：完全在本地，不需要网络 ---------- */
